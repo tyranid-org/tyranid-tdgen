@@ -2,7 +2,7 @@ import { Tyr } from 'tyranid';
 import test from 'ava';
 import * as mongodb from 'mongodb';
 import * as path from 'path';
-
+import * as fs from 'fs';
 
 import TestCol from './models/Test';
 import LinkedCol from './models/Linked';
@@ -10,7 +10,9 @@ import User from './models/User';
 
 
 import {
-  generate
+  generate,
+  generateFileSync,
+  generateStream
 } from '../src';
 
 
@@ -32,6 +34,15 @@ test.before(async () => {
 });
 
 
-test(() => {
-  console.log(generate(Tyr.collections));
+test('Should successfully write file', () => {
+  generateFileSync(Tyr.collections, "./test.d.ts");
+});
+
+
+test('Should successfully write stream', t => {
+  generateStream(Tyr.collections)
+    .pipe(fs.createWriteStream("./test-stream.d.ts"))
+    .on('end', () => {
+      t.pass();
+    });
 });

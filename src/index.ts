@@ -1,23 +1,14 @@
 import { Tyr } from 'tyranid';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Readable } from 'stream';
 
-const { version } = JSON.parse(
+const { version: tdgenVersion } = JSON.parse(
   fs.readFileSync(
     path.join(__dirname, "../../package.json"),
     "utf-8"
   )
 );
-
-
-interface InterfaceDeclaration {
-  name: string,
-  properties: {
-    name: string,
-    // primative or subdocument
-    type: string | InterfaceDeclaration
-  }
-}
 
 
 function formatName(name: string) {
@@ -83,7 +74,24 @@ function addField(def: any, indent = 0): string {
 }
 
 
-export function generateDocumentInterface(col: Tyr.CollectionInstance, colInterfaceName: string) {
+export const version = tdgenVersion;
+
+export interface DocumentInterfaceDeclaration {
+  interfaceName: string;
+  name: string;
+  declaration: string
+};
+
+export interface CollectionInterfaceDeclaration extends DocumentInterfaceDeclaration {
+  id: string;
+  doc: DocumentInterfaceDeclaration;
+}
+
+
+export function generateDocumentInterface(
+  col: Tyr.CollectionInstance,
+  colInterfaceName: string
+): DocumentInterfaceDeclaration {
   const { name, fields } = col.def;
   const interfaceName = `${formatName(name)}Document`;
 
@@ -96,7 +104,8 @@ export function generateDocumentInterface(col: Tyr.CollectionInstance, colInterf
   }
 
   return {
-    name: interfaceName,
+    name,
+    interfaceName,
     declaration: `
     /**
      * Document returned by collection "${name}" <${colInterfaceName}>
@@ -109,52 +118,23 @@ export function generateDocumentInterface(col: Tyr.CollectionInstance, colInterf
 }
 
 
-export function generate(collections: Tyr.CollectionInstance[]) {
+export function generateCollectionInstanceInterface(
+  col: Tyr.CollectionInstance
+): CollectionInterfaceDeclaration {
+  const {
+    name,
+    id
+  } = col.def;
 
-  const interfacePropMap: {
-    [key: string]: {
-      name: string,
-      id: string,
-      doc: {
-        name: string,
-        declaration: string
-      }
-    }
-  } = {};
+  const interfaceName = `${formatName(name)}CollectionInstance`;
+  const doc = generateDocumentInterface(col, interfaceName);
 
-  /**
-   * For each collection, we need to add...
-   *   1. A new interface extending CollectionInstance
-   *   2. A new interface extending Document, returned by (1)
-   *   3. An extension of byName and byId which include the new CollectionInstances
-   */
-  for (const col of collections) {
-    const {
-      name,
-      id
-    } = col.def;
-
-    const colInterfaceName = `${formatName(name)}CollectionInstance`;
-
-    interfacePropMap[colInterfaceName] = {
-      name,
-      id,
-      doc: generateDocumentInterface(col, colInterfaceName)
-    };
-  }
-
-  const collectionInterfaces: string[] = [];
-  const byNameEntries: string[] = [];
-  const byIdEntries: string[] = [];
-  const documentInterfaces: string[] = [];
-  for (const interfaceName in interfacePropMap) {
-    const { name, id, doc } = interfacePropMap[interfaceName];
-
-    byNameEntries.push(`${name}: ${interfaceName};`)
-    byIdEntries.push(`${id}: ${interfaceName};`);
-    documentInterfaces.push(doc.declaration);
-
-    collectionInterfaces.push(`
+  return {
+    name,
+    id,
+    doc,
+    interfaceName,
+    declaration: `
     /**
      * Type definition for "${name}" collection
      */
@@ -165,10 +145,58 @@ export function generate(collections: Tyr.CollectionInstance[]) {
       findOne(...args: any[]): Promise<${doc.name}>;
       findAndModify(...args: any[]): Promise<${doc.name}>;
     }
-    `);
+    `
+  }
+};
+
+
+export function generateStream(collections: Tyr.CollectionInstance[]) {
+  const stream = new Readable();
+  const td = generate(collections);
+  stream.push(td);
+  stream.push(null);
+  return stream;
+}
+
+
+export function generateFileSync(collections: Tyr.CollectionInstance[], filename: string): string {
+  const td = generate(collections);
+  fs.writeFileSync(filename, td);
+  return td;
+}
+
+
+export function generateFile(collections: Tyr.CollectionInstance[], filename: string): Promise<string> {
+  return new Promise((res, rej) => {
+    try {
+      const td = generate(collections);
+      fs.writeFile(filename, td, (err) => {
+        if (err) rej(err);
+        res(td);
+      });
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
+
+export function generate(collections: Tyr.CollectionInstance[]) {
+  const collectionInterfaces = collections.map(generateCollectionInstanceInterface);
+  const byNameEntries: string[] = [];
+  const byIdEntries: string[] = [];
+  const collectionInterfaceDeclarations: string[] = [];
+  const documentInterfaceDeclarations: string[] = [];
+
+  for (const colInt of collectionInterfaces) {
+    const { name, id, doc, interfaceName, declaration } = colInt;
+    byNameEntries.push(`${name}: ${interfaceName};`)
+    byIdEntries.push(`${id}: ${interfaceName};`);
+    documentInterfaceDeclarations.push(doc.declaration);
+    collectionInterfaceDeclarations.push(declaration);
   }
 
-  return `/**
+  const td = `/**
  * Generated by \`tyranid-tdgen@${version}\`: https://github.com/tyranid-org/tyranid-tdgen
  * date: ${new Date()}
  */
@@ -192,12 +220,14 @@ declare module 'tyranid' {
       ${byIdEntries.join("\n      ")}
     }
 
-    ${collectionInterfaces.join("\n")}
+    ${collectionInterfaceDeclarations.join("\n")}
 
-    ${documentInterfaces.join("\n")}
+    ${documentInterfaceDeclarations.join("\n")}
 
   }
 
 }
 `;
+
+  return td;
 }
