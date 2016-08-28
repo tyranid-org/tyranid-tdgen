@@ -14,7 +14,7 @@ export default new Tyr.Collection({
       of: {
         is: 'object',
         fields: {
-          type: { is: 'integer'},
+          type: { is: 'integer' },
           name: { is: 'string' }
         }
       }
