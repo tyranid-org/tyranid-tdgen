@@ -24,10 +24,13 @@ interface InterfaceDeclaration {
 
 export function generate(collections: Tyr.CollectionInstance[]) {
 
-  const interfaces = {
-    collectionInstances: <string[]> [],
-    documents: <string[]> []
-  };
+  const interfacePropMap: {
+    [key: string]: {
+      name: string,
+      id: string,
+      doc: string
+    }
+  } = {};
 
   /**
    * For each collection, we need to add...
@@ -36,12 +39,43 @@ export function generate(collections: Tyr.CollectionInstance[]) {
    *   3. An extension of byName and byId which include the new CollectionInstances
    */
   for (const col of collections) {
-    const def = col.def;
+    const {
+      name,
+      id
+    } = col.def;
 
-    const pascalName = _.upperFirst(_.camelCase(def.name));
-    const colInterfaceName = `Tyranid${pascalName}CollectionInstance`
+    const pascalName = _.upperFirst(_.camelCase(name));
+
+    const colInterfaceName = `Tyranid${pascalName}CollectionInstance`;
     const docInterfaceName = `Tyranid${pascalName}Document`;
 
+    interfacePropMap[colInterfaceName] = {
+      name,
+      id,
+      doc: docInterfaceName
+    };
+
+  }
+
+  const collectionInterfaces: string[] = [];
+  const byNameEntries: string[] = [];
+  const byIdEntries: string[] = [];
+  for (const interfaceName in interfacePropMap) {
+    const { name, id, doc } = interfacePropMap[interfaceName];
+    byNameEntries.push(`${name}: ${interfaceName};`)
+    byIdEntries.push(`${id}: ${interfaceName};`);
+    collectionInterfaces.push(`
+    /**
+     * Type definition for "${name}" collection
+     */
+    interface ${interfaceName} extends CollectionInstance {
+      new (...args: any[]): ${doc};
+      fromClient(...args: any): ${doc};
+      findAll(...args: any[]): Promise<${doc}[]>;
+      findOne(...args: any[]): Promise<${doc}>;
+      findAndModify(...args: any[]): Promise<${doc}>;
+    }
+    `);
   }
 
   return `
@@ -50,9 +84,27 @@ export function generate(collections: Tyr.CollectionInstance[]) {
  * date: ${new Date()}
  */
 declare module 'tyranid' {
+
   namespace Tyr {
 
+    /**
+     * Add lookup properties to Tyr.byName with extended interfaces
+     */
+    interface TyranidCollectionsByName {
+      ${byNameEntries.join("\n      ")}
+    }
+
+    /**
+     * Add lookup properties to Tyr.byId with extended interfaces
+     */
+    interface TyranidCollectionsById {
+      ${byIdEntries.join("\n      ")}
+    }
+
+    ${collectionInterfaces.join("\n")}
+
   }
+
 }
   `;
 }
