@@ -118,6 +118,25 @@ export function generateDocumentInterface(
 }
 
 
+
+  /**
+   * Methods to override with new document type
+   */
+export const methods = {
+  single: [
+    'new ',
+    'fromClient'
+  ],
+  arrayPromise: [
+    'findAll'
+  ],
+  singlePromise: [
+    'findAndModify',
+    'findOne'
+  ]
+};
+
+
 export function generateCollectionInstanceInterface(
   col: Tyr.CollectionInstance
 ): CollectionInterfaceDeclaration {
@@ -128,6 +147,7 @@ export function generateCollectionInstanceInterface(
 
   const interfaceName = `${formatName(name)}CollectionInstance`;
   const doc = generateDocumentInterface(col, interfaceName);
+  const signature = `(...args: any[]): `;
 
   return {
     name,
@@ -139,11 +159,9 @@ export function generateCollectionInstanceInterface(
      * Type definition for "${name}" collection
      */
     interface ${interfaceName} extends CollectionInstance {
-      new (...args: any[]): ${doc.name};
-      fromClient(...args: any): ${doc.name};
-      findAll(...args: any[]): Promise<${doc.name}[]>;
-      findOne(...args: any[]): Promise<${doc.name}>;
-      findAndModify(...args: any[]): Promise<${doc.name}>;
+      ${methods.single.map(m => `${m}${signature}${doc.interfaceName};`).join("\n      ")}
+      ${methods.singlePromise.map(m => `${m}${signature}Promise<${doc.interfaceName}>;`).join("\n      ")}
+      ${methods.arrayPromise.map(m => `${m}${signature}Promise<${doc.interfaceName}[]>;`).join("\n      ")}
     }
     `
   }
