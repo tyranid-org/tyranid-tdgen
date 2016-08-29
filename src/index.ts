@@ -184,15 +184,17 @@ export function generateFileSync(collections: Tyr.CollectionInstance[], filename
 }
 
 
-export function generateFile(collections: Tyr.CollectionInstance[], filename: string): Promise<string> {
+export function generateFile(collections: Tyr.CollectionInstance[], filename: string, cb?: Function): Promise<string> {
   return new Promise((res, rej) => {
     try {
       const td = generate(collections);
       fs.writeFile(filename, td, (err) => {
         if (err) rej(err);
+        if (cb) cb(err, td);
         res(td);
       });
     } catch (err) {
+      if (cb) cb(err);
       rej(err);
     }
   });
