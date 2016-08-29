@@ -1,0 +1,52 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/bensouthgate/.nvm/versions/node/v4.3.2/bin/node',
+1 verbose cli   '/Users/bensouthgate/.nvm/versions/node/v4.3.2/bin/npm',
+1 verbose cli   'run',
+1 verbose cli   'test' ]
+2 info using npm@3.8.6
+3 info using node@v4.3.2
+4 verbose run-script [ 'pretest', 'test', 'posttest' ]
+5 info lifecycle tyranid-tdgen@0.0.1~pretest: tyranid-tdgen@0.0.1
+6 verbose lifecycle tyranid-tdgen@0.0.1~pretest: unsafe-perm in lifecycle true
+7 verbose lifecycle tyranid-tdgen@0.0.1~pretest: PATH: /Users/bensouthgate/.nvm/versions/node/v4.3.2/lib/node_modules/npm/bin/node-gyp-bin:/Users/bensouthgate/mc/tyranid-tdgen/node_modules/.bin:/Users/bensouthgate/.nvm/versions/node/v4.3.2/bin:/Users/bensouthgate/.nvm/versions/node/v4.3.2/bin:/Users/bensouthgate/projects/blisp/interpreter/bin:/Users/bensouthgate/flowtype:/Users/bensouthgate/mongodb-osx-x86_64-3.2.0/bin:/Users/bensouthgate/ec2-api-tools-1.7.5.1/bin:/Applications/Postgres.app/Contents/Versions/9.4/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/TeX/texbin:/usr/local/opt/fzf/bin
+8 verbose lifecycle tyranid-tdgen@0.0.1~pretest: CWD: /Users/bensouthgate/mc/tyranid-tdgen
+9 silly lifecycle tyranid-tdgen@0.0.1~pretest: Args: [ '-c', 'npm run build' ]
+10 silly lifecycle tyranid-tdgen@0.0.1~pretest: Returned: code: 0  signal: null
+11 info lifecycle tyranid-tdgen@0.0.1~test: tyranid-tdgen@0.0.1
+12 verbose lifecycle tyranid-tdgen@0.0.1~test: unsafe-perm in lifecycle true
+13 verbose lifecycle tyranid-tdgen@0.0.1~test: PATH: /Users/bensouthgate/.nvm/versions/node/v4.3.2/lib/node_modules/npm/bin/node-gyp-bin:/Users/bensouthgate/mc/tyranid-tdgen/node_modules/.bin:/Users/bensouthgate/.nvm/versions/node/v4.3.2/bin:/Users/bensouthgate/.nvm/versions/node/v4.3.2/bin:/Users/bensouthgate/projects/blisp/interpreter/bin:/Users/bensouthgate/flowtype:/Users/bensouthgate/mongodb-osx-x86_64-3.2.0/bin:/Users/bensouthgate/ec2-api-tools-1.7.5.1/bin:/Applications/Postgres.app/Contents/Versions/9.4/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/TeX/texbin:/usr/local/opt/fzf/bin
+14 verbose lifecycle tyranid-tdgen@0.0.1~test: CWD: /Users/bensouthgate/mc/tyranid-tdgen
+15 silly lifecycle tyranid-tdgen@0.0.1~test: Args: [ '-c', 'npm run ava && npm run compile-test' ]
+16 silly lifecycle tyranid-tdgen@0.0.1~test: Returned: code: 1  signal: null
+17 info lifecycle tyranid-tdgen@0.0.1~test: Failed to exec test script
+18 verbose stack Error: tyranid-tdgen@0.0.1 test: `npm run ava && npm run compile-test`
+18 verbose stack Exit status 1
+18 verbose stack     at EventEmitter.<anonymous> (/Users/bensouthgate/.nvm/versions/node/v4.3.2/lib/node_modules/npm/lib/utils/lifecycle.js:239:16)
+18 verbose stack     at emitTwo (events.js:87:13)
+18 verbose stack     at EventEmitter.emit (events.js:172:7)
+18 verbose stack     at ChildProcess.<anonymous> (/Users/bensouthgate/.nvm/versions/node/v4.3.2/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+18 verbose stack     at emitTwo (events.js:87:13)
+18 verbose stack     at ChildProcess.emit (events.js:172:7)
+18 verbose stack     at maybeClose (internal/child_process.js:821:16)
+18 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+19 verbose pkgid tyranid-tdgen@0.0.1
+20 verbose cwd /Users/bensouthgate/mc/tyranid-tdgen/test/compile-test
+21 error Darwin 15.6.0
+22 error argv "/Users/bensouthgate/.nvm/versions/node/v4.3.2/bin/node" "/Users/bensouthgate/.nvm/versions/node/v4.3.2/bin/npm" "run" "test"
+23 error node v4.3.2
+24 error npm  v3.8.6
+25 error code ELIFECYCLE
+26 error tyranid-tdgen@0.0.1 test: `npm run ava && npm run compile-test`
+26 error Exit status 1
+27 error Failed at the tyranid-tdgen@0.0.1 test script 'npm run ava && npm run compile-test'.
+27 error Make sure you have the latest version of node.js and npm installed.
+27 error If you do, this is most likely a problem with the tyranid-tdgen package,
+27 error not with npm itself.
+27 error Tell the author that this fails on your system:
+27 error     npm run ava && npm run compile-test
+27 error You can get information on how to open an issue for this project with:
+27 error     npm bugs tyranid-tdgen
+27 error Or if that isn't available, you can get their info via:
+27 error     npm owner ls tyranid-tdgen
+27 error There is likely additional logging output above.
+28 verbose exit [ 1, true ]

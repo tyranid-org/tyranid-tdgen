@@ -8,7 +8,9 @@
     "build": "rm -rf ./dist-es6/ ./dist-es5/ && npm run typings && npm run lint && npm run tsc && npm run babel",
     "copy-typings": "cp -r ./typings ./dist-es6 && cp -r ./typings ./dist-es5",
     "pretest": "npm run build",
-    "test": "./node_modules/.bin/nyc ./node_modules/.bin/ava",
+    "ava": "./node_modules/.bin/nyc ./node_modules/.bin/ava",
+    "test": "npm run ava && npm run compile-test",
+    "compile-test": "mkdir -p ./generated && ./node_modules/.bin/tsc -p ./test/compile-test/",
     "tsc": "./node_modules/typescript/bin/tsc -d --pretty",
     "typings": "./node_modules/.bin/typings install",
     "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json ./{test,lib}/**/*.ts && echo '> \\033[0;32mlinter passed!\\033[0m'"

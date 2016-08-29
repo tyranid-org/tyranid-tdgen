@@ -110,7 +110,7 @@ export function generateDocumentInterface(
     /**
      * Document returned by collection "${name}" <${colInterfaceName}>
      */
-    interface ${interfaceName} extends Document {
+    export interface ${interfaceName} extends Document {
       ${properties.join("\n      ")}
     }
     `
@@ -158,7 +158,7 @@ export function generateCollectionInstanceInterface(
     /**
      * Type definition for "${name}" collection
      */
-    interface ${interfaceName} extends CollectionInstance {
+    export interface ${interfaceName} extends CollectionInstance {
       ${methods.single.map(m => `${m}${signature}${doc.interfaceName};`).join("\n      ")}
       ${methods.singlePromise.map(m => `${m}${signature}Promise<${doc.interfaceName}>;`).join("\n      ")}
       ${methods.arrayPromise.map(m => `${m}${signature}Promise<${doc.interfaceName}[]>;`).join("\n      ")}

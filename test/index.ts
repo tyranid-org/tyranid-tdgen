@@ -35,13 +35,13 @@ test.before(async () => {
 
 
 test('Should successfully write file', () => {
-  generateFileSync(Tyr.collections, "./test.d.ts");
+  generateFileSync(Tyr.collections, path.join(root, "../generated/test.d.ts"));
 });
 
 
 test('Should successfully write stream', t => {
   generateStream(Tyr.collections)
-    .pipe(fs.createWriteStream("./test-stream.d.ts"))
+    .pipe(fs.createWriteStream(path.join(root, "../generated/test-stream.d.ts")))
     .on('end', () => {
       t.pass();
     });
