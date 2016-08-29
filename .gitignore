@@ -3,3 +3,6 @@ dist-es6/*
 node_modules/*
 .nyc_output
 generated
+test/compile-test/*
+!test/compile-test/index.ts
+!test/compile-test/tsconfig.json
