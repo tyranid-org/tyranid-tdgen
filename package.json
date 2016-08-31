@@ -2,7 +2,7 @@
   "name": "tyranid-tdgen",
   "version": "0.0.1",
   "description": "Generate type definition files from tyranid schemas",
-  "main": "dist-es5/index.js",
+  "main": "dist-es5/src/index.js",
   "scripts": {
     "babel": "./node_modules/.bin/babel ./dist-es6 --out-dir ./dist-es5",
     "build": "rm -rf ./dist-es6/ ./dist-es5/ && npm run typings && npm run lint && npm run tsc && npm run babel",
