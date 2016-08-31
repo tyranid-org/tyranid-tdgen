@@ -1,6 +1,6 @@
 {
   "name": "tyranid-tdgen",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generate type definition files from tyranid schemas",
   "main": "dist-es5/src/index.js",
   "scripts": {
