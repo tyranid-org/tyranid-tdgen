@@ -23,9 +23,18 @@ function pad(str: string, indent: number) {
 }
 
 
-function addField(def: any, indent = 0): string {
-  if ('def' in def) def = def.def;
-  if ('link' in def) return 'ObjectID';
+
+
+function addField(name: string, def: any, indent = 0, parent?: string): string {
+  if (def.def) def = def.def;
+  if (def.link) {
+    // add populated prop too
+    if (parent === 'array') return 'ObjectID'; // TODO: better parser will add optional array populated prop
+    let out = '';
+    out += 'ObjectID;\n';
+    out += pad(`${name.replace(/Id$/, '')}$?: ${formatName(def.link)}Document`, indent - 1);
+    return out;
+  }
 
   switch (def.is) {
 
@@ -51,7 +60,7 @@ function addField(def: any, indent = 0): string {
       return 'ObjectID';
 
     case 'array':
-      return `${def.of ? addField(def.of, indent) : 'any'}[]`;
+      return `${def.of ? addField(name, def.of, indent, 'array') : 'any'}[]`;
 
     case 'object': {
       const subFields = def.fields;
@@ -59,8 +68,9 @@ function addField(def: any, indent = 0): string {
       let obj = ""
       obj += "{";
       for (const sub in subFields) {
+        const required = (sub === '_id') || subFields[sub].required || (subFields[sub].def && subFields[sub].def.required);
         obj += "\n"
-        obj += pad(`${sub}: ${addField(subFields[sub], indent + 1)}`, indent);
+        obj += pad(`${sub + (required ? '' : '?')}: ${addField(sub, subFields[sub], indent + 1)}`, indent);
       }
       obj += "\n";
       obj += pad("}", indent - 1);
@@ -94,12 +104,13 @@ export function generateDocumentInterface(
 ): DocumentInterfaceDeclaration {
   const { name, fields } = col.def;
   const interfaceName = `${formatName(name)}Document`;
-
-  let properties: string[] = [];
+  const properties: string[] = [];
 
   for (const field in fields) {
+    const def = fields[field]['def'];
+    const required = (field === '_id') || def.required || (def.def && def.def.required);
     properties.push(
-      `${field}: ${addField(fields[field]['def'], 4)};`
+      `${field + (required ? '' : '?')}: ${addField(field, def, 4)};`
     );
   }
 
@@ -142,12 +153,60 @@ export function generateCollectionInstanceInterface(
 ): CollectionInterfaceDeclaration {
   const {
     name,
-    id
+    id,
+    fields
   } = col.def;
 
   const interfaceName = `${formatName(name)}CollectionInstance`;
   const doc = generateDocumentInterface(col, interfaceName);
   const signature = `(...args: any[]): `;
+  const properties: string[] = [];
+  const enummeration = col.def.enum;
+
+  if (enummeration) {
+    const rows = col.def.values;
+
+    if ('name' in fields) {
+      for (const row of rows) {
+        let obj = "{";
+        for (const key in row) {
+          if (row[key]) {
+            obj += '\n';
+            obj += pad(`${key}: ${
+              typeof row[key] === 'string'
+                ? `'${row[key]}'`
+                : (typeof row[key] === 'number' ? 'number' : 'any')
+            },`, 4)
+          }
+        }
+        obj += '\n';
+        obj += pad('}', 3);
+
+        properties.push(
+          `\n      ${(<any> row)['name'].toUpperCase().trim().replace(/\s+/gi, '_')}: ${obj};`
+        );
+      }
+    }
+  }
+
+  let methodDeclarations = '';
+
+  if (!enummeration) {
+    methodDeclarations += [
+      '',
+      methods.single.map(m => `${m}${signature}${doc.interfaceName};`).join("\n      "),
+      methods.singlePromise.map(m => `${m}${signature}Promise<${doc.interfaceName}>;`).join("\n      "),
+      methods.arrayPromise.map(m => `${m}${signature}Promise<${doc.interfaceName}[]>;`).join("\n      "),
+      `byLabel(label: string): Promise<${doc.interfaceName}>;`,
+      ''
+    ].join("\n      ");
+  } else {
+    methodDeclarations += [
+      '',
+      `byLabel(label: string): ${doc.interfaceName};`,
+      ''
+    ].join("\n      ");
+  }
 
   return {
     name,
@@ -159,9 +218,11 @@ export function generateCollectionInstanceInterface(
      * Type definition for "${name}" collection
      */
     export interface ${interfaceName} extends CollectionInstance {
-      ${methods.single.map(m => `${m}${signature}${doc.interfaceName};`).join("\n      ")}
-      ${methods.singlePromise.map(m => `${m}${signature}Promise<${doc.interfaceName}>;`).join("\n      ")}
-      ${methods.arrayPromise.map(m => `${m}${signature}Promise<${doc.interfaceName}[]>;`).join("\n      ")}
+      ${methodDeclarations}${
+        properties.length
+          ? "\n      " + properties.join("\n      ") + "\n      "
+          : ''
+      }
     }
     `
   }
