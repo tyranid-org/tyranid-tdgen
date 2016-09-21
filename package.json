@@ -17,7 +17,7 @@
     "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json ./{test,lib}/**/*.ts && echo '> \\033[0;32mlinter passed!\\033[0m'"
   },
   "author": "bsouthga@gmail.com",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "ava": "^0.16.0",
     "nyc": "^7.1.0",
