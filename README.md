@@ -1,4 +1,4 @@
-# Generate type definition files from tyranid schemas
+# tyranid-tdgen
 
 [![npm version](https://badge.fury.io/js/tyranid-tdgen.svg)](https://badge.fury.io/js/tyranid-tdgen)
 [![Build Status](https://travis-ci.org/tyranid-org/tyranid-tdgen.svg?branch=master)](https://travis-ci.org/tyranid-org/tyranid-tdgen)
