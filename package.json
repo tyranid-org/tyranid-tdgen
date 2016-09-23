@@ -15,21 +15,23 @@
     "test": "npm run ava && npm run compile-test",
     "compile-test": "mkdir -p ./generated && ./node_modules/.bin/tsc -p ./test/compile-test/",
     "tsc": "./node_modules/typescript/bin/tsc -d --pretty",
-    "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json ./{test,lib}/**/*.ts && echo '> \\033[0;32mlinter passed!\\033[0m'"
+    "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json ./{test,lib}/**/*.ts && echo '> \\033[0;32mlinter passed!\\033[0m'",
+    "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && ./node_modules/.bin/codecov"
   },
   "author": "bsouthga@gmail.com",
   "license": "Apache-2.0",
   "devDependencies": {
     "ava": "0.16.0",
-    "nyc": "8.3.0",
-    "typescript": "2.0.3",
-    "typings": "1.4.0",
-    "tyranid": "0.1.7",
-    "tslint": "3.15.1",
     "babel-cli": "6.14.0",
     "babel-core": "6.14.0",
     "babel-polyfill": "6.13.0",
-    "babel-preset-es2015-node4": "2.1.0"
+    "babel-preset-es2015-node4": "2.1.0",
+    "codecov": "1.0.1",
+    "nyc": "8.3.0",
+    "tslint": "3.15.1",
+    "typescript": "2.0.3",
+    "typings": "1.4.0",
+    "tyranid": "0.1.7"
   },
   "peerDependencies": {
     "tyranid": "^0.1.7"
