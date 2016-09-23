@@ -13,7 +13,6 @@
         "removeComments": false,
         "noLib": false,
         "pretty": true,
-        "outDir": "./dist-es6/",
         "inlineSourceMap": true,
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true

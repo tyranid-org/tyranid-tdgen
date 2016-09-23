@@ -19,6 +19,7 @@
     "experimentalDecorators": true
   },
   "include": [
+    "./src/tyranid-tdgen.ts",
     "./src/index.ts",
     "./test/index.ts",
     "./test/models/*.ts"
