@@ -1,4 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
 /// <reference path="../../generated/test.d.ts" />
 
 import { Tyr } from 'tyranid';
@@ -11,3 +10,4 @@ function run() {
     });
 }
 
+run();

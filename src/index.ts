@@ -5,8 +5,8 @@ import { Readable } from 'stream';
 
 const { version: tdgenVersion } = JSON.parse(
   fs.readFileSync(
-    path.join(__dirname, "../../package.json"),
-    "utf-8"
+    path.join(__dirname, '../../package.json'),
+    'utf-8'
   )
 );
 
@@ -18,7 +18,7 @@ function formatName(name: string) {
 
 function pad(str: string, indent: number) {
   let i = indent;
-  while (i--) str = "  " + str;
+  while (i--) str = '  ' + str;
   return str;
 }
 
@@ -65,15 +65,15 @@ function addField(name: string, def: any, indent = 0, parent?: string): string {
     case 'object': {
       const subFields = def.fields;
       if (!subFields) return 'any';
-      let obj = ""
-      obj += "{";
+      let obj = '';
+      obj += '{';
       for (const sub in subFields) {
         const required = (sub === '_id') || subFields[sub].required || (subFields[sub].def && subFields[sub].def.required);
-        obj += "\n"
+        obj += '\n';
         obj += pad(`${sub + (required ? '' : '?')}: ${addField(sub, subFields[sub], indent + 1)}`, indent);
       }
-      obj += "\n";
-      obj += pad("}", indent - 1);
+      obj += '\n';
+      obj += pad('}', indent - 1);
       return obj;
     }
 
@@ -89,7 +89,7 @@ export const version = tdgenVersion;
 export interface DocumentInterfaceDeclaration {
   interfaceName: string;
   name: string;
-  declaration: string
+  declaration: string;
 };
 
 export interface CollectionInterfaceDeclaration extends DocumentInterfaceDeclaration {
@@ -106,12 +106,16 @@ export function generateDocumentInterface(
   const interfaceName = `${formatName(name)}Document`;
   const properties: string[] = [];
 
+  if (!fields) throw new Error(`Collection "${name}" has no fields!`);
+
   for (const field in fields) {
     const def = fields[field]['def'];
-    const required = (field === '_id') || def.required || (def.def && def.def.required);
-    properties.push(
-      `${field + (required ? '' : '?')}: ${addField(field, def, 4)};`
-    );
+    if (def) {
+      const required = (field === '_id') || def.required;
+      properties.push(
+        `${field + (required ? '' : '?')}: ${addField(field, def, 4)};`
+      );
+    }
   }
 
   return {
@@ -122,7 +126,7 @@ export function generateDocumentInterface(
      * Document returned by collection "${name}" <${colInterfaceName}>
      */
     export interface ${interfaceName} extends Document {
-      ${properties.join("\n      ")}
+      ${properties.join('\n      ')}
     }
     `
   };
@@ -163,12 +167,14 @@ export function generateCollectionInstanceInterface(
   const properties: string[] = [];
   const enummeration = col.def.enum;
 
+  if (!fields) throw new Error(`Collection "${name}" has no fields!`);
+
   if (enummeration) {
     const rows = col.def.values;
 
-    if ('name' in fields) {
+    if (rows && ('name' in fields)) {
       for (const row of rows) {
-        let obj = "{";
+        let obj = '{';
         for (const key in row) {
           if (row[key]) {
             obj += '\n';
@@ -176,7 +182,7 @@ export function generateCollectionInstanceInterface(
               typeof row[key] === 'string'
                 ? `'${row[key]}'`
                 : (typeof row[key] === 'number' ? 'number' : 'any')
-            },`, 4)
+            },`, 4);
           }
         }
         obj += '\n';
@@ -194,18 +200,18 @@ export function generateCollectionInstanceInterface(
   if (!enummeration) {
     methodDeclarations += [
       '',
-      methods.single.map(m => `${m}${signature}${doc.interfaceName};`).join("\n      "),
-      methods.singlePromise.map(m => `${m}${signature}Promise<${doc.interfaceName}>;`).join("\n      "),
-      methods.arrayPromise.map(m => `${m}${signature}Promise<${doc.interfaceName}[]>;`).join("\n      "),
+      methods.single.map(m => `${m}${signature}${doc.interfaceName};`).join('\n      '),
+      methods.singlePromise.map(m => `${m}${signature}Promise<${doc.interfaceName}>;`).join('\n      '),
+      methods.arrayPromise.map(m => `${m}${signature}Promise<${doc.interfaceName}[]>;`).join('\n      '),
       `byLabel(label: string): Promise<${doc.interfaceName}>;`,
       ''
-    ].join("\n      ");
+    ].join('\n      ');
   } else {
     methodDeclarations += [
       '',
-      `byLabel(label: string): ${doc.interfaceName};`,
+      `byLabel(label: string): Promise<${doc.interfaceName}>;`,
       ''
-    ].join("\n      ");
+    ].join('\n      ');
   }
 
   return {
@@ -220,12 +226,12 @@ export function generateCollectionInstanceInterface(
     export interface ${interfaceName} extends CollectionInstance {
       ${methodDeclarations}${
         properties.length
-          ? "\n      " + properties.join("\n      ") + "\n      "
+          ? '\n      ' + properties.join('\n      ') + '\n      '
           : ''
       }
     }
     `
-  }
+  };
 };
 
 
@@ -271,7 +277,7 @@ export function generate(collections: Tyr.CollectionInstance[]) {
 
   for (const colInt of collectionInterfaces) {
     const { name, id, doc, interfaceName, declaration } = colInt;
-    byNameEntries.push(`${name}: ${interfaceName};`)
+    byNameEntries.push(`${name}: ${interfaceName};`);
     byIdEntries.push(`${id}: ${interfaceName};`);
     documentInterfaceDeclarations.push(doc.declaration);
     collectionInterfaceDeclarations.push(declaration);
@@ -291,19 +297,19 @@ declare module 'tyranid' {
      * Add lookup properties to Tyr.byName with extended interfaces
      */
     interface TyranidCollectionsByName {
-      ${byNameEntries.join("\n      ")}
+      ${byNameEntries.join('\n      ')}
     }
 
     /**
      * Add lookup properties to Tyr.byId with extended interfaces
      */
     interface TyranidCollectionsById {
-      ${byIdEntries.join("\n      ")}
+      ${byIdEntries.join('\n      ')}
     }
 
-    ${collectionInterfaceDeclarations.join("\n")}
+    ${collectionInterfaceDeclarations.join('\n')}
 
-    ${documentInterfaceDeclarations.join("\n")}
+    ${documentInterfaceDeclarations.join('\n')}
 
   }
 
