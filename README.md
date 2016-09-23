@@ -1,4 +1,8 @@
-## tyranid-tdgen  [![Build Status](https://travis-ci.org/tyranid-org/tyranid-tdgen.svg?branch=master)](https://travis-ci.org/tyranid-org/tyranid-tdgen) [![npm version](https://badge.fury.io/js/tyranid-tdgen.svg)](https://badge.fury.io/js/tyranid-tdgen) [![codecov](https://codecov.io/gh/tyranid-org/tyranid-tdgen/branch/master/graph/badge.svg)](https://codecov.io/gh/tyranid-org/tyranid-tdgen)
+# Generate type definition files from tyranid schemas
+
+[![npm version](https://badge.fury.io/js/tyranid-tdgen.svg)](https://badge.fury.io/js/tyranid-tdgen)
+[![Build Status](https://travis-ci.org/tyranid-org/tyranid-tdgen.svg?branch=master)](https://travis-ci.org/tyranid-org/tyranid-tdgen)
+[![codecov](https://codecov.io/gh/tyranid-org/tyranid-tdgen/branch/master/graph/badge.svg)](https://codecov.io/gh/tyranid-org/tyranid-tdgen)
 
 Generate typescript `.d.ts` files from your tyranid schema definitions. The generated type definition files extend tyranids own type definitions through [declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html)
 
