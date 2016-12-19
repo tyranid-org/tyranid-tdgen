@@ -18,6 +18,9 @@
     "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json ./{test,lib}/**/*.ts && echo '> \\033[0;32mlinter passed!\\033[0m'",
     "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && ./node_modules/.bin/codecov"
   },
+  "engines": {
+    "node": ">=6.9.1"
+  },
   "author": "bsouthga@gmail.com",
   "license": "Apache-2.0",
   "devDependencies": {
