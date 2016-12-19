@@ -11,12 +11,14 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "removeComments": false,
-    "noLib": false,
     "pretty": true,
-    "outDir": "./dist-es6/",
+    "outDir": "./dist/",
     "inlineSourceMap": true,
     "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "lib": [
+      "es6"
+    ]
   },
   "include": [
     "./src/tyranid-tdgen.ts",
