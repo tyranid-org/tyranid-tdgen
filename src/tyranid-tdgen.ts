@@ -10,19 +10,19 @@ const DEFAULT_DBNAME = '__tyranid__tdgen__';
 const config = require(path.join(ROOT, '../../package.json'));
 
 // TODO: is there a way to require a module relative to a different directory?
-const Tyr = require(path.join(process.cwd(), './node_modules/tyranid/dist/tyranid.js')).Tyr;
+const CWD = process.cwd();
+const Tyr = require(path.join(CWD, './node_modules/tyranid/dist/tyranid.js')).Tyr;
 
-let dir: string | undefined;
+let fileGlob: string | undefined;
 
 program
   .version(config.version)
-  .usage('[options] <dir>')
+  .usage('[options] <glob>')
   .option('-o, --out-file [outFileName]', 'File to output declaration into, defaults to stdout')
-  .option('-f, --file-match', 'file match string, defaults to "*.js"')
   .option('-d, --database-name [name]', `mongodb database name to use, defaults to ${DEFAULT_DBNAME}`)
   .option('-h, --mongodb-host', `mongodb host, defaults to ${DEFAULT_HOST}`)
-  .action((dirGlob) => {
-    dir = dirGlob;
+  .action((glob) => {
+    fileGlob = glob;
   })
   .parse(process.argv);
 
@@ -30,16 +30,20 @@ program
  * Run command
  */
 (async () => {
-  if (!dir) return program.help();
+  if (!fileGlob) return program.help();
 
   const db = await mongodb
     .MongoClient
-    .connect(`${DEFAULT_HOST}/${DEFAULT_DBNAME}`);
+    .connect(`${program['mongodbHost'] || DEFAULT_HOST}/${program['databaseName'] || DEFAULT_DBNAME}`);
+
+  const globToUse = path.resolve(fileGlob) === fileGlob
+    ? fileGlob
+    : path.join(CWD, fileGlob);
 
   Tyr.config({
     db: db,
     validate: [
-      { dir: path.join(process.cwd(), dir), fileMatch: '.*\.js' }
+      { glob: globToUse }
     ]
   });
 
