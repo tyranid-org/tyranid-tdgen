@@ -13,6 +13,7 @@ export function addField(opts: {
   indent: number,
   enumCollectionIdLookup: EnumIdAliasLookup,
   parent?: string,
+  colName?: string,
   siblingFields?: { [key: string]: any },
 }): string {
   let {
@@ -21,7 +22,8 @@ export function addField(opts: {
     indent = 0,
     parent,
     siblingFields,
-    enumCollectionIdLookup
+    enumCollectionIdLookup,
+    colName
   } = opts;
 
   /**
@@ -30,6 +32,11 @@ export function addField(opts: {
    * 
    */
   if (def.def) def = def.def;
+
+  // if the field is `_id` and the collection is an enum, use the type alias
+  if (name === '_id' && colName && (colName in enumCollectionIdLookup)) {
+    return enumCollectionIdLookup[colName].idTypeAlias;
+  }
 
   /**
    * 

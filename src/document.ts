@@ -42,6 +42,7 @@ export function generateDocumentInterface(opts: {
         def: def,
         indent: 4,
         siblingFields: fields,
+        colName: name,
         enumCollectionIdLookup
       });
 
