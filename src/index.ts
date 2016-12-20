@@ -80,7 +80,10 @@ function addField(
       if (!subFields || (Array.isArray(subFields) && !subFields.length)) return 'any';
       let obj = '';
       obj += '{';
-      for (const sub in subFields) {
+      const subFieldKeys = Object.keys(subFields);
+      subFieldKeys.sort();
+
+      for (const sub of subFieldKeys) {
         const required = (sub === '_id') || subFields[sub].required || (subFields[sub].def && subFields[sub].def.required);
         obj += '\n';
         obj += pad(`${sub + (required ? '' : '?')}: ${addField(sub, subFields[sub], indent + 1, void 0, subFields)}`, indent);
@@ -121,7 +124,10 @@ export function generateDocumentInterface(
 
   if (!fields) throw new Error(`Collection "${name}" has no fields!`);
 
-  for (const field in fields) {
+  const fieldKeys = Object.keys(fields);
+  fieldKeys.sort();
+
+  for (const field of fieldKeys) {
     const def = fields[field]['def'];
     if (def) {
       const required = (field === '_id') || def.required;
@@ -289,7 +295,8 @@ export function generateFile(collections: Tyr.CollectionInstance[], filename: st
 
 
 export function generate(collections: Tyr.CollectionInstance[]) {
-  const collectionInterfaces = collections.map(generateCollectionInstanceInterface);
+  const collectionsSorted = _.sortBy(collections, c => c.def.name);
+  const collectionInterfaces = collectionsSorted.map(generateCollectionInstanceInterface);
   const byNameEntries: string[] = [];
   const byIdEntries: string[] = [];
   const collectionInterfaceDeclarations: string[] = [];
