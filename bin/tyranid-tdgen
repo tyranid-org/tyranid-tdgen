@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../dist/src/tyranid-tdgen.js');
+require('../dist/src/cli.js');
