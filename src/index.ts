@@ -1,6 +1,7 @@
 import { Tyr } from 'tyranid';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as _ from 'lodash';
 import { Readable } from 'stream';
 
 const { version: tdgenVersion } = JSON.parse(
@@ -161,7 +162,7 @@ export function generateCollectionInstanceInterface(
     fields
   } = col.def;
 
-  const interfaceName = `${formatName(name)}CollectionInstance`;
+  const interfaceName = `${formatName(name)}`;
   const doc = generateDocumentInterface(col, interfaceName);
   const signature = `(...args: any[]): `;
   const properties: string[] = [];
@@ -189,7 +190,7 @@ export function generateCollectionInstanceInterface(
         obj += pad('}', 3);
 
         properties.push(
-          `\n      ${(<any> row)['name'].toUpperCase().trim().replace(/\s+/gi, '_')}: ${obj};`
+          `\n      ${_.snakeCase((<any> row)['name']).toUpperCase()}: ${obj};`
         );
       }
     }
