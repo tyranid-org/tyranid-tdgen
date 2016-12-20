@@ -77,7 +77,7 @@ function addField(
 
     case 'object': {
       const subFields = def.fields;
-      if (!subFields || !subFields.length) return 'any';
+      if (!subFields || (Array.isArray(subFields) && !subFields.length)) return 'any';
       let obj = '';
       obj += '{';
       for (const sub in subFields) {
