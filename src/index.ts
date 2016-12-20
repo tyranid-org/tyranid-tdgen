@@ -189,9 +189,9 @@ export function generateCollectionInstanceInterface(
   if (!fields) throw new Error(`Collection "${name}" has no fields!`);
 
   if (enummeration) {
-    const rows = col.def.values;
+    const rows = _.sortBy(col.def.values || [], 'name');
 
-    if (rows && ('name' in fields)) {
+    if (rows.length && ('name' in fields)) {
       for (const row of rows) {
         let obj = '{';
         for (const key in row) {
