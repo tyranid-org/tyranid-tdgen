@@ -7,7 +7,8 @@ import * as fs from 'fs';
 
 import {
   generateFileSync,
-  generateStream
+  generateStream,
+  generateFile
 } from '../src';
 
 
@@ -31,6 +32,18 @@ test.before(async () => {
 
 test('Should successfully write file', () => {
   generateFileSync(Tyr.collections, path.join(root, '../generated/test.d.ts'));
+});
+
+
+test('Should successfully write file async', (t) => {
+  return generateFile(
+      Tyr.collections,
+      path.join(root, '../generated/test-async.d.ts'),
+      () => {
+        t.pass();
+      }
+    )
+    .then(() => {}); // void promise for ava
 });
 
 
