@@ -1,6 +1,6 @@
-/// <reference path="../../generated/test.d.ts" />
-
 import { Tyr } from 'tyranid';
+
+
 
 function run() {
   Tyr.byName.user.findAll({})

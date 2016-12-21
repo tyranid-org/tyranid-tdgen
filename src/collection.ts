@@ -23,30 +23,15 @@ export interface EnumIdAliasLookup {
   [key: string]: EnumCollectionIdTypeAlias;
 }
 
-  /**
-   * Methods to override with new document type
-   */
-export const methods = {
-  single: [
-    'new ',
-    'fromClient'
-  ],
-  arrayPromise: [
-    'findAll'
-  ],
-  singlePromise: [
-    'findAndModify',
-    'findOne'
-  ]
-};
-
 
 /**
  * produce union type alias for enum id values
  */
-export function generateEnumCollectionIdTypeAlias(opts: {
-  col: Tyr.CollectionInstance
-}): EnumCollectionIdTypeAlias | void {
+export function generateEnumCollectionIdTypeAlias(
+  opts: {
+    col: Tyr.CollectionInstance
+  }
+): EnumCollectionIdTypeAlias | void {
   const { col } = opts;
   if (!col.def.enum) throw new Error(`Non-enum collection passed to generateEnumCollectionIdTypeAlias`);
 
@@ -82,10 +67,12 @@ export function generateEnumCollectionIdTypeAlias(opts: {
 /**
  * generate interface for individual tyranid collection
  */
-export function generateCollectionInstanceInterface(opts: {
-  col: Tyr.CollectionInstance,
-  enumCollectionIdLookup: EnumIdAliasLookup
-}): CollectionInterfaceDeclaration {
+export function generateCollectionInstanceInterface(
+  opts: {
+    col: Tyr.CollectionInstance,
+    enumCollectionIdLookup: EnumIdAliasLookup
+  }
+): CollectionInterfaceDeclaration {
   const { col, enumCollectionIdLookup } = opts;
 
   const {
@@ -101,7 +88,6 @@ export function generateCollectionInstanceInterface(opts: {
     enumCollectionIdLookup
   });
 
-  const signature = `(...args: any[]): `;
   const properties: string[] = [];
   const enummeration = col.def.enum;
 
@@ -153,24 +139,9 @@ export function generateCollectionInstanceInterface(opts: {
     }
   }
 
-  let methodDeclarations = '';
-
-  if (!enummeration) {
-    methodDeclarations += [
-      '',
-      methods.single.map(m => `${m}${signature}${doc.interfaceName};`).join('\n      '),
-      methods.singlePromise.map(m => `${m}${signature}Promise<${doc.interfaceName}>;`).join('\n      '),
-      methods.arrayPromise.map(m => `${m}${signature}Promise<${doc.interfaceName}[]>;`).join('\n      '),
-      `byLabel(label: string): Promise<${doc.interfaceName}>;`,
-      ''
-    ].join('\n      ');
-  } else {
-    methodDeclarations += [
-      '',
-      `byLabel(label: string): Promise<${doc.interfaceName}>;`,
-      ''
-    ].join('\n      ');
-  }
+  const interfaceType = enummeration
+    ? 'TypedEnum'
+    : 'TypedCollection';
 
   return {
     name,
@@ -181,13 +152,7 @@ export function generateCollectionInstanceInterface(opts: {
     /**
      * Type definition for "${name}" collection
      */
-    export interface ${interfaceName} extends Tyr.CollectionInstance {
-      ${methodDeclarations}${
-        properties.length
-          ? '\n      ' + properties.join('\n      ') + '\n      '
-          : ''
-      }
-    }
+    export interface ${interfaceName} extends ${interfaceType}<${doc.interfaceName}> {}
     `
   };
 };
