@@ -105,6 +105,8 @@ declare module 'tyranid' {
       findOne(...args: any[]): Promise<T>;
       findAndModify(...args: any[]): Promise<T>;
       byLabel(label: string): Promise<T>;
+      byId(id: any): Promise<T>;
+      byIds(ids: any[]): Promise<T>;
     }
 
     /**
