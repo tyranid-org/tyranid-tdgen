@@ -1,6 +1,6 @@
 import { Tyr } from 'tyranid';
 import * as _ from 'lodash';
-import { version } from './util';
+import { version, taggedUnion } from './util';
 import {
   generateCollectionInstanceInterface,
   generateEnumCollectionIdTypeAlias,
@@ -119,6 +119,19 @@ declare module 'tyranid' {
     ${collectionInterfaceDeclarations.join('')}
     ${documentInterfaceDeclarations.join('')}
     ${enumCollectionIdAliases.map(a => a.declaration).join('')}
+
+    /**
+     * Union type of all current collection names
+     */
+    export type TyranidCollectionName = ${taggedUnion(Tyr.collections, 'def.name')}
+
+
+    /**
+     * Union type of all current collection ids
+     */
+    export type TyranidCollectionId = ${taggedUnion(Tyr.collections, 'def.id')}
+
+
   }
 
 }

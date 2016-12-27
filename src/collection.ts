@@ -1,6 +1,6 @@
 import { Tyr } from 'tyranid';
 import * as _ from 'lodash';
-import { pad, formatName } from './util';
+import { pad, formatName, taggedUnion } from './util';
 import { DocumentInterfaceDeclaration, generateDocumentInterface } from './document';
 
 
@@ -44,11 +44,7 @@ export function generateEnumCollectionIdTypeAlias(
   if (!('_id' in values[0])) return;
 
   const idTypeAlias = `${formatName(name)}Id`;
-  const idType = values.map((v: any) => {
-    const id = v['_id'];
-    if (typeof id === 'string') return `'${id}'`;
-    return id;
-  }).join('|');
+  const idType = taggedUnion(values, '_id');
 
   return {
     col,
