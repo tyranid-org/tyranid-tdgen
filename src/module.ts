@@ -21,7 +21,7 @@ export interface InterfaceGenerationOptions {
  * create a type definition file for tyranid collections
  */
 export function generate(
-  collections: Tyr.CollectionInstance[],
+  collections: Tyr.GenericCollection[],
   passedOptions: InterfaceGenerationOptions = {}
 ) {
   const opts = Object.assign({
@@ -84,36 +84,15 @@ declare module 'tyranid' {
     /**
      * Add lookup properties to Tyr.byName with extended interfaces
      */
-    interface TyranidCollectionsByName {
+    interface CollectionsByName {
       ${byNameEntries.join('\n      ')}
     }
 
     /**
      * Add lookup properties to Tyr.byId with extended interfaces
      */
-    interface TyranidCollectionsById {
+    interface CollectionsById {
       ${byIdEntries.join('\n      ')}
-    }
-
-    /**
-     * Parametric collection extension
-     */
-    export interface TypedCollection<T extends Tyr.Document> extends Tyr.CollectionInstance {
-      new (...args: any[]): T;
-      fromClient(...args: any[]): T;
-      findAll(...args: any[]): Promise<T[]>;
-      findOne(...args: any[]): Promise<T>;
-      findAndModify(...args: any[]): Promise<T>;
-      byLabel(label: string): Promise<T>;
-      byId(...args: any[]): Promise<T>;
-      byIds(...args: any[]): Promise<T[]>;
-    }
-
-    /**
-     * Parametric enum collection extension
-     */
-    export interface TypedEnum<T extends Tyr.Document> extends Tyr.CollectionInstance {
-      byLabel(label: string): Promise<T>;
     }
 
     ${collectionInterfaceDeclarations.join('')}
@@ -123,14 +102,12 @@ declare module 'tyranid' {
     /**
      * Union type of all current collection names
      */
-    export type TyranidCollectionName = ${taggedUnion(Tyr.collections, 'def.name')}
-
+    export type CollectionName = ${taggedUnion(Tyr.collections, 'def.name')}
 
     /**
      * Union type of all current collection ids
      */
-    export type TyranidCollectionId = ${taggedUnion(Tyr.collections, 'def.id')}
-
+    export type CollectionId = ${taggedUnion(Tyr.collections, 'def.id')}
 
   }
 

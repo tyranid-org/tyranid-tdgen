@@ -32,7 +32,7 @@
     "tyranid": "0.1.7"
   },
   "peerDependencies": {
-    "tyranid": "^0.1.7"
+    "tyranid": "^0.1.15"
   },
   "ava": {
     "files": [

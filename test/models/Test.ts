@@ -9,6 +9,24 @@ export default new Tyr.Collection({
     name: { is: 'string' },
     count: { is: 'double' },
     linkId: { link: 'linked' },
+    nestedMapArray: {
+      is: 'array',
+      of: {
+        is: 'object',
+        keys: {
+          is: 'string'
+        },
+        of: {
+          is: 'object',
+          keys: {
+            is: 'string'
+          },
+          of: {
+            link: 'user'
+          }
+        }
+      }
+    },
     list: {
       is: 'array',
       of: {

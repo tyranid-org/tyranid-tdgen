@@ -18,7 +18,7 @@ export interface DocumentInterfaceDeclaration {
  * generate interface for tyranid document type
  */
 export function generateDocumentInterface(opts: {
-  col: Tyr.CollectionInstance,
+  col: Tyr.GenericCollection,
   colInterfaceName: string,
   enumCollectionIdLookup: EnumIdAliasLookup
 }): DocumentInterfaceDeclaration {

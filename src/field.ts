@@ -2,10 +2,24 @@ import { pad, formatName } from './util';
 import { EnumIdAliasLookup } from './collection';
 
 
+function assignableToString(fieldName: string) {
+  switch (fieldName) {
+    case 'string':
+    case 'url':
+    case 'email':
+    case 'image':
+    case 'password':
+    case 'uid':
+      return true;
+  }
+  return false;
+}
+
+
 /**
- * 
+ *
  * given an field definition, emmit a type definition
- * 
+ *
  */
 export function addField(opts: {
   name: string,
@@ -15,6 +29,7 @@ export function addField(opts: {
   parent?: string,
   colName?: string,
   siblingFields?: { [key: string]: any },
+  noPopulatedProperty?: boolean
 }): string {
   let {
     name,
@@ -23,13 +38,14 @@ export function addField(opts: {
     parent,
     siblingFields,
     enumCollectionIdLookup,
-    colName
+    colName,
+    noPopulatedProperty = false
   } = opts;
 
   /**
-   * 
+   *
    * TODO: tyranid typings need to be fixed
-   * 
+   *
    */
   if (def.def) def = def.def;
 
@@ -39,9 +55,9 @@ export function addField(opts: {
   }
 
   /**
-   * 
+   *
    * link types
-   * 
+   *
    */
   if (def.link) {
     const linkIdType = (def.link in enumCollectionIdLookup)
@@ -49,7 +65,7 @@ export function addField(opts: {
       : 'ObjectID';
 
     // add populated prop too
-    if (parent === 'array') return linkIdType; // TODO: better parser will add optional array populated prop
+    if (parent === 'array' || noPopulatedProperty) return linkIdType; // TODO: better parser will add optional array populated prop
     let out = '';
     out += `${linkIdType};\n`;
 
@@ -63,9 +79,9 @@ export function addField(opts: {
   }
 
   /**
-   * 
+   *
    * general types
-   * 
+   *
    */
   switch (def.is) {
 
@@ -92,9 +108,9 @@ export function addField(opts: {
 
     case 'array': {
       return `${def.of ? addField({
-        name, 
-        def: def.of, 
-        indent, 
+        name,
+        def: def.of,
+        indent,
         parent: 'array',
         enumCollectionIdLookup
       }) : 'any'}[]`;
@@ -102,6 +118,33 @@ export function addField(opts: {
 
 
     case 'object': {
+      if (def.keys && def.of) {
+        if (!def.keys.is || (!assignableToString(def.keys.is) && def.keys.is !== 'integer')) {
+          console.warn(`Invalid key type: ${JSON.stringify(def.keys)} defaulting to any`);
+          return 'any';
+        }
+
+        const subType = addField({
+          name: name + '_hash',
+          def: def.of,
+          indent: indent + 1,
+          enumCollectionIdLookup,
+          noPopulatedProperty: true
+        });
+
+        const keyType = assignableToString(def.keys.is)
+          ? 'string'
+          : 'number';
+
+        let obj = '{';
+        obj += '\n';
+        obj += pad(`[key: ${keyType}]: ${subType} | void ;`, indent);
+        obj += '\n';
+        obj += pad('}', indent - 1);
+        return obj;
+      }
+
+
       const subFields = def.fields;
 
       if (!subFields || (Array.isArray(subFields) && !subFields.length)) return 'any';

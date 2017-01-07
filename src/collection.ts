@@ -14,7 +14,7 @@ export interface CollectionInterfaceDeclaration extends DocumentInterfaceDeclara
 }
 
 export interface EnumCollectionIdTypeAlias {
-  col: Tyr.CollectionInstance;
+  col: Tyr.GenericCollection;
   declaration: string;
   idTypeAlias: string;
 }
@@ -29,7 +29,7 @@ export interface EnumIdAliasLookup {
  */
 export function generateEnumCollectionIdTypeAlias(
   opts: {
-    col: Tyr.CollectionInstance
+    col: Tyr.GenericCollection
   }
 ): EnumCollectionIdTypeAlias | void {
   const { col } = opts;
@@ -65,7 +65,7 @@ export function generateEnumCollectionIdTypeAlias(
  */
 export function generateCollectionInstanceInterface(
   opts: {
-    col: Tyr.CollectionInstance,
+    col: Tyr.GenericCollection,
     enumCollectionIdLookup: EnumIdAliasLookup
   }
 ): CollectionInterfaceDeclaration {
@@ -135,10 +135,6 @@ export function generateCollectionInstanceInterface(
     }
   }
 
-  const interfaceType = enummeration
-    ? 'TypedEnum'
-    : 'TypedCollection';
-
   return {
     name,
     id,
@@ -148,7 +144,7 @@ export function generateCollectionInstanceInterface(
     /**
      * Type definition for "${name}" collection
      */
-    export interface ${interfaceName} extends ${interfaceType}<${doc.interfaceName}> {}
+    export interface ${interfaceName} extends CollectionInstance<${doc.interfaceName}> {}
     `
   };
 };

@@ -5,13 +5,13 @@ import { generate, InterfaceGenerationOptions } from './module';
 
 
 /**
- * 
+ *
  * generate Tyranid collection interfaces
  * and pipe to nodejs writeable stream
- * 
+ *
  */
 export function generateStream(
-  collections: Tyr.CollectionInstance[],
+  collections: Tyr.GenericCollection[],
   opts?: InterfaceGenerationOptions
 ) {
   const stream = new Readable();
@@ -23,13 +23,13 @@ export function generateStream(
 
 
 /**
- * 
+ *
  * generate Tyranid collection interfaces
  * and write results to file synchronously
- * 
+ *
  */
 export function generateFileSync(
-  collections: Tyr.CollectionInstance[],
+  collections: Tyr.GenericCollection[],
   filename: string,
   opts?: InterfaceGenerationOptions
 ): string {
@@ -41,13 +41,13 @@ export function generateFileSync(
 
 
 /**
- * 
+ *
  * generate Tyranid collection interfaces
  * and write results to file
- * 
+ *
  */
 export function generateFile(
-  collections: Tyr.CollectionInstance[],
+  collections: Tyr.GenericCollection[],
   filename: string,
   opts?: InterfaceGenerationOptions | Function,
   cb?: Function
