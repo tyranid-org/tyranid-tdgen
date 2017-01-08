@@ -54,3 +54,12 @@ test('Should successfully write stream', t => {
       t.pass();
     });
 });
+
+
+test('Should generate client-side definitions', t => {
+  generateStream(Tyr.collections, { client: true })
+    .pipe(fs.createWriteStream(path.join(root, '../generated/test-stream-client.d.ts')))
+    .on('end', () => {
+      t.pass();
+    });
+});

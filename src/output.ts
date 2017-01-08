@@ -1,7 +1,30 @@
 import { Tyr } from 'tyranid';
 import * as fs from 'fs';
 import { Readable } from 'stream';
-import { generate, InterfaceGenerationOptions } from './module';
+import { InterfaceGenerationOptions } from './util';
+import { generateServerDefinitionFile } from './server';
+import { generateClientDefinitionFile } from './client';
+
+
+
+export interface DefinitionGenerationOptions extends InterfaceGenerationOptions {
+
+  /**
+   *
+   * generate client side definitions instead of server
+   *
+   */
+  client?: boolean;
+
+}
+
+
+function resolveGenerationMethod(opts: DefinitionGenerationOptions = {}) {
+  return opts.client
+    ? generateClientDefinitionFile
+    : generateServerDefinitionFile;
+}
+
 
 
 /**
@@ -12,10 +35,10 @@ import { generate, InterfaceGenerationOptions } from './module';
  */
 export function generateStream(
   collections: Tyr.GenericCollection[],
-  opts?: InterfaceGenerationOptions
+  opts?: DefinitionGenerationOptions
 ) {
   const stream = new Readable();
-  const td = generate(collections, opts);
+  const td = resolveGenerationMethod(opts)(collections, opts);
   stream.push(td);
   stream.push(null);
   return stream;
@@ -31,9 +54,9 @@ export function generateStream(
 export function generateFileSync(
   collections: Tyr.GenericCollection[],
   filename: string,
-  opts?: InterfaceGenerationOptions
+  opts?: DefinitionGenerationOptions
 ): string {
-  const td = generate(collections, opts);
+  const td = resolveGenerationMethod(opts)(collections, opts);
   fs.writeFileSync(filename, td);
   return td;
 }
@@ -49,17 +72,20 @@ export function generateFileSync(
 export function generateFile(
   collections: Tyr.GenericCollection[],
   filename: string,
-  opts?: InterfaceGenerationOptions | Function,
+  rawOpts?: DefinitionGenerationOptions | Function,
   cb?: Function
 ): Promise<string> {
-  if (opts instanceof Function) {
-    cb = opts;
+  let opts: DefinitionGenerationOptions;
+  if (rawOpts instanceof Function) {
+    cb = rawOpts;
     opts = {};
+  } else {
+    opts = rawOpts || {};
   }
 
   return new Promise((res, rej) => {
     try {
-      const td = generate(collections, opts);
+      const td = resolveGenerationMethod(opts)(collections, opts);
       fs.writeFile(filename, td, (err) => {
         if (err) rej(err);
         if (cb) cb(err, td);

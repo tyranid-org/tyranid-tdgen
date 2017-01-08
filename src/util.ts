@@ -10,6 +10,14 @@ export const { version } = JSON.parse(
 );
 
 
+export interface InterfaceGenerationOptions {
+  // write date to file
+  date?: boolean;
+  // string to write at top of generated file
+  header?: string;
+}
+
+
 /**
  * standard formatting for interface name
  */
