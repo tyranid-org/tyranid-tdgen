@@ -83,12 +83,12 @@ export function generateModule(
     /**
      * Union type of all current collection names
      */
-    export type CollectionName = ${taggedUnion(Tyr.collections, 'def.name')}
+    export type CollectionName = ${taggedUnion(Tyr.collections, 'def.name')};
 
     /**
      * Union type of all current collection ids
      */
-    export type CollectionId = ${taggedUnion(Tyr.collections, 'def.id')}
+    export type CollectionId = ${taggedUnion(Tyr.collections, 'def.id')};
   `;
 
   return definitions;
