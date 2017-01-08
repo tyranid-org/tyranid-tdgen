@@ -18,6 +18,11 @@
     "experimentalDecorators": true,
     "lib": [
       "es6"
+    ],
+    "types": [
+      "commander",
+      "lodash",
+      "node"
     ]
   },
   "include": [
@@ -25,5 +30,8 @@
     "./src/index.ts",
     "./test/index.ts",
     "./test/models/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

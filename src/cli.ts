@@ -4,15 +4,41 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { generateStream } from './index';
 
+/**
+ * @private
+ */
 const ROOT = __dirname;
+
+/**
+ * @private
+ */
 const DEFAULT_HOST = 'mongodb://127.0.0.1:27017';
+
+/**
+ * @private
+ */
 const DEFAULT_DBNAME = '__tyranid__tdgen__';
+
+/**
+ * @private
+ */
 const config = require(path.join(ROOT, '../../package.json'));
 
 // TODO: is there a way to require a module relative to a different directory?
+
+/**
+ * @private
+ */
 const CWD = process.cwd();
+
+/**
+ * @private
+ */
 const Tyr = require(path.join(CWD, './node_modules/tyranid/dist/tyranid.js')).Tyr;
 
+/**
+ * @private
+ */
 let fileGlob: string | undefined;
 
 program

@@ -44,7 +44,7 @@ export function generateModule(
     }, {} as EnumIdAliasLookup)
     .value();
 
-  const enumCollectionIdAliases = enumCollectionIdChain.value();
+  const enumCollectionIdAliases = enumCollectionIdChain.value() as EnumCollectionIdTypeAlias[];
 
 
   const collectionInterfaces = _.chain(collections)
