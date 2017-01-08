@@ -29,7 +29,7 @@
     "nyc": "8.3.0",
     "tslint": "3.15.1",
     "typescript": "2.1.4",
-    "tyranid": "0.1.7"
+    "tyranid": "0.1.15"
   },
   "peerDependencies": {
     "tyranid": "^0.1.15"
