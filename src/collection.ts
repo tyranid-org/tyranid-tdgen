@@ -115,7 +115,7 @@ export function generateCollectionInstanceInterface(
             }
 
             obj += '\n';
-            obj += pad(`${key}: ${propType},`, 4);
+            obj += pad(`${key}: ${propType};`, 4);
           }
         }
         obj += '\n';
@@ -135,6 +135,10 @@ export function generateCollectionInstanceInterface(
     }
   }
 
+  const props = properties.length
+    ? (properties.join('\n') + '\n')
+    : '';
+
   return {
     name,
     id,
@@ -144,7 +148,9 @@ export function generateCollectionInstanceInterface(
     /**
      * Type definition for "${name}" collection
      */
-    export interface ${interfaceName} extends CollectionInstance<${doc.interfaceName}> {}
+    export interface ${interfaceName} extends CollectionInstance<${doc.interfaceName}> {
+      ${props}
+    }
     `
   };
 };
