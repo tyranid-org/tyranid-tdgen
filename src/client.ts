@@ -26,12 +26,16 @@ declare module 'tyranid-client' {
 
     type ObjectID = string;
 
-    export const byName: CollectionsByName;
-    export const byId: CollectionsById;
+    export const byName: CollectionsByName & { [key: string]: GenericCollection | void };
+
+    export const byId: CollectionsById & { [key: string]: GenericCollection | void };
+
+    export interface GenericCollection extends CollectionInstance<Tyr.Document> {}
 
     export interface CollectionInstance<T extends Tyr.Document> {
       findAll(args: any): Promise<T[]>;
       findOne(args: any): Promise<T>;
+      idToUid(id: string): string;
     }
 
     export interface Document {

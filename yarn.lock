@@ -1813,13 +1813,9 @@ got@^5.0.0:
     unzip-response "^1.0.2"
     url-parse-lax "^1.0.0"
 
-graceful-fs@4.1.10:
+graceful-fs@4.1.10, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
   version "4.1.10"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.10.tgz#f2d720c22092f743228775c75e3612632501f131"
-
-graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
-  version "4.1.11"
-  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
 graceful-fs@~1:
   version "1.2.3"
@@ -3424,9 +3420,9 @@ typescript@2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.1.4.tgz#b53b69fb841126acb1dd4b397d21daba87572251"
 
-tyranid@0.1.15:
-  version "0.1.15"
-  resolved "https://registry.yarnpkg.com/tyranid/-/tyranid-0.1.15.tgz#9007da46c7dd904c965d20c8602ffb046c54ec73"
+tyranid@0.1.17:
+  version "0.1.17"
+  resolved "https://registry.yarnpkg.com/tyranid/-/tyranid-0.1.17.tgz#a52b2bfe8e34f2e5be4399f5660892c2bef97719"
   dependencies:
     "@types/express" "4.0.33"
     "@types/mongodb" "2.1.33"
