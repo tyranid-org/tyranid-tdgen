@@ -41,10 +41,10 @@ export function generateModule(
     .reduce((out, alias: EnumCollectionIdTypeAlias) => {
       out[alias.col.def.name] = alias;
       return out;
-    }, {} as EnumIdAliasLookup)
+    }, <EnumIdAliasLookup> {})
     .value();
 
-  const enumCollectionIdAliases = enumCollectionIdChain.value() as EnumCollectionIdTypeAlias[];
+  const enumCollectionIdAliases = enumCollectionIdChain.value();
 
 
   const collectionInterfaces = _.chain(collections)

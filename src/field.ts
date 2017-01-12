@@ -1,7 +1,6 @@
 import { pad, formatName } from './util';
 import { EnumIdAliasLookup } from './collection';
 
-
 function assignableToString(fieldName: string) {
   switch (fieldName) {
     case 'string':
@@ -15,22 +14,23 @@ function assignableToString(fieldName: string) {
   return false;
 }
 
-
 /**
  *
  * given an field definition, emmit a type definition
  *
  */
-export function addField(opts: {
-  name: string,
-  def: any,
-  indent: number,
-  enumCollectionIdLookup: EnumIdAliasLookup,
-  parent?: string,
-  colName?: string,
-  siblingFields?: { [key: string]: any },
-  noPopulatedProperty?: boolean
-}): string {
+export function addField(
+  opts: {
+    name: string,
+    def: any,
+    indent: number,
+    enumCollectionIdLookup: EnumIdAliasLookup,
+    parent?: string,
+    colName?: string,
+    siblingFields?: { [key: string]: any },
+    noPopulatedProperty?: boolean
+  }
+): string {
   let {
     name,
     def,
@@ -47,10 +47,11 @@ export function addField(opts: {
    * TODO: tyranid typings need to be fixed
    *
    */
-  if (def.def) def = def.def;
+  if (def.def)
+    def = def.def;
 
   // if the field is `_id` and the collection is an enum, use the type alias
-  if (name === '_id' && colName && (colName in enumCollectionIdLookup)) {
+  if (name === '_id' && colName && colName in enumCollectionIdLookup) {
     return enumCollectionIdLookup[colName].idTypeAlias;
   }
 
@@ -60,17 +61,20 @@ export function addField(opts: {
    *
    */
   if (def.link) {
-    const linkIdType = (def.link in enumCollectionIdLookup)
+    const linkIdType = def.link in enumCollectionIdLookup
       ? enumCollectionIdLookup[def.link].idTypeAlias
       : 'ObjectID';
 
     // add populated prop too
-    if (parent === 'array' || noPopulatedProperty) return linkIdType; // TODO: better parser will add optional array populated prop
+    if (parent === 'array' || noPopulatedProperty)
+      return linkIdType;
+    // TODO: better parser will add optional array populated prop
     let out = '';
     out += `${linkIdType};\n`;
 
     const deIded = name.replace(/Id$/, '');
-    let replacementName = (!/Id$/.test(name) || (siblingFields && (deIded in siblingFields)))
+    let replacementName = !/Id$/.test(name) ||
+      siblingFields && deIded in siblingFields
       ? `${name}$`
       : deIded;
 
@@ -84,7 +88,6 @@ export function addField(opts: {
    *
    */
   switch (def.is) {
-
     case 'string':
     case 'url':
     case 'email':
@@ -107,20 +110,26 @@ export function addField(opts: {
       return 'ObjectID';
 
     case 'array': {
-      return `${def.of ? addField({
-        name,
-        def: def.of,
-        indent,
-        parent: 'array',
-        enumCollectionIdLookup
-      }) : 'any'}[]`;
+      return `${def.of
+        ? addField({
+          name,
+          def: def.of,
+          indent,
+          parent: 'array',
+          enumCollectionIdLookup
+        })
+        : 'any'}[]`;
     }
-
 
     case 'object': {
       if (def.keys && def.of) {
-        if (!def.keys.is || (!assignableToString(def.keys.is) && def.keys.is !== 'integer')) {
-          console.warn(`Invalid key type: ${JSON.stringify(def.keys)} defaulting to any`);
+        if (
+          !def.keys.is ||
+            !assignableToString(def.keys.is) && def.keys.is !== 'integer'
+        ) {
+          console.warn(
+            `Invalid key type: ${JSON.stringify(def.keys)} defaulting to any`
+          );
           return 'any';
         }
 
@@ -132,9 +141,7 @@ export function addField(opts: {
           noPopulatedProperty: true
         });
 
-        const keyType = assignableToString(def.keys.is)
-          ? 'string'
-          : 'number';
+        const keyType = assignableToString(def.keys.is) ? 'string' : 'number';
 
         let obj = '{';
         obj += '\n';
@@ -144,21 +151,18 @@ export function addField(opts: {
         return obj;
       }
 
-
       const subFields = def.fields;
 
-      if (!subFields || (Array.isArray(subFields) && !subFields.length)) return 'any';
+      if (!subFields || Array.isArray(subFields) && !subFields.length)
+        return 'any';
       const subFieldKeys = Object.keys(subFields);
       subFieldKeys.sort();
 
       let obj = '{';
 
       for (const sub of subFieldKeys) {
-        const required = (
-          (sub === '_id') ||
-          subFields[sub].required ||
-          (subFields[sub].def && subFields[sub].def.required)
-        );
+        const required = sub === '_id' || subFields[sub].required ||
+          subFields[sub].def && subFields[sub].def.required;
         obj += '\n';
         const subName = sub + (required ? '' : '?');
         const subType = addField({

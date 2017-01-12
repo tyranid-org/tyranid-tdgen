@@ -1,13 +1,9 @@
 import { version, InterfaceGenerationOptions } from './util';
 
-
 export function generateDefinitionPreamble(
   passedOptions: InterfaceGenerationOptions
 ) {
-  const opts = Object.assign({
-    date: true,
-    header: ''
-  }, passedOptions);
+  const opts = Object.assign({ date: true, header: '' }, passedOptions);
 
   return `${opts.header}/**
  *

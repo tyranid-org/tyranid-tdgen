@@ -8,7 +8,6 @@ import { generateDefinitionPreamble } from './preamble';
  * TODO: base interfaces should be moved to tyranid repo
  *
  */
-
 /**
  *
  * Generate tyranid definition file for client usage

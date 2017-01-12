@@ -7,27 +7,29 @@ import { EnumIdAliasLookup } from './collection';
  * generated interface for tyranid document type,
  * with metadata
  */
-export interface DocumentInterfaceDeclaration {
-  interfaceName: string;
-  name: string;
-  declaration: string;
-};
-
+export interface DocumentInterfaceDeclaration  {
+  interfaceName: string,
+  name: string,
+  declaration: string
+}
 
 /**
  * generate interface for tyranid document type
  */
-export function generateDocumentInterface(opts: {
-  col: Tyr.GenericCollection,
-  colInterfaceName: string,
-  enumCollectionIdLookup: EnumIdAliasLookup
-}): DocumentInterfaceDeclaration {
+export function generateDocumentInterface(
+  opts: {
+    col: Tyr.GenericCollection,
+    colInterfaceName: string,
+    enumCollectionIdLookup: EnumIdAliasLookup
+  }
+): DocumentInterfaceDeclaration {
   const { col, colInterfaceName, enumCollectionIdLookup } = opts;
   const { name, fields } = col.def;
   const interfaceName = `${formatName(name)}`;
   const properties: string[] = [];
 
-  if (!fields) throw new Error(`Collection "${name}" has no fields!`);
+  if (!fields)
+    throw new Error(`Collection "${name}" has no fields!`);
 
   const fieldKeys = Object.keys(fields);
   fieldKeys.sort();
@@ -35,7 +37,7 @@ export function generateDocumentInterface(opts: {
   for (const field of fieldKeys) {
     const def = fields[field]['def'];
     if (def) {
-      const required = (field === '_id') || def.required;
+      const required = field === '_id' || def.required;
       const fieldName = field + (required ? '' : '?');
       const fieldType = addField({
         name: field,

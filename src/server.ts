@@ -3,7 +3,6 @@ import { InterfaceGenerationOptions } from './util';
 import { generateModule } from './module';
 import { generateDefinitionPreamble } from './preamble';
 
-
 /**
  *
  * Generate tyranid definition file for server usage, extends existing tyranid types

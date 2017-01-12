@@ -5,27 +5,20 @@ import { InterfaceGenerationOptions } from './util';
 import { generateServerDefinitionFile } from './server';
 import { generateClientDefinitionFile } from './client';
 
-
-
 export interface DefinitionGenerationOptions extends InterfaceGenerationOptions {
-
   /**
    *
    * generate client side definitions instead of server
    *
    */
-  client?: boolean;
-
+  client?: boolean
 }
-
 
 function resolveGenerationMethod(opts: DefinitionGenerationOptions = {}) {
   return opts.client
     ? generateClientDefinitionFile
     : generateServerDefinitionFile;
 }
-
-
 
 /**
  *
@@ -44,7 +37,6 @@ export function generateStream(
   return stream;
 }
 
-
 /**
  *
  * generate Tyranid collection interfaces
@@ -60,8 +52,6 @@ export function generateFileSync(
   fs.writeFileSync(filename, td);
   return td;
 }
-
-
 
 /**
  *
@@ -86,13 +76,16 @@ export function generateFile(
   return new Promise((res, rej) => {
     try {
       const td = resolveGenerationMethod(opts)(collections, opts);
-      fs.writeFile(filename, td, (err) => {
-        if (err) rej(err);
-        if (cb) cb(err, td);
+      fs.writeFile(filename, td, err => {
+        if (err)
+          rej(err);
+        if (cb)
+          cb(err, td);
         res(td);
       });
     } catch (err) {
-      if (cb) cb(err);
+      if (cb)
+        cb(err);
       rej(err);
     }
   });
