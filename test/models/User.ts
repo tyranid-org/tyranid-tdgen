@@ -12,11 +12,8 @@ export default new Tyr.Collection({
       is: 'array',
       of: {
         is: 'object',
-        fields: {
-          years: { is: 'integer' },
-          name: { is: 'string' }
-        }
+        fields: { years: { is: 'integer' }, name: { is: 'string' } }
       }
     }
   }
-});
+})

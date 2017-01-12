@@ -18,7 +18,8 @@
     "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json ./{test,lib}/**/*.ts && echo '> \\033[0;32mlinter passed!\\033[0m'",
     "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && ./node_modules/.bin/codecov",
     "docs": "typedoc --options typedoc.json src",
-    "gh-pages": "npm run docs && gh-pages -d docs"
+    "gh-pages": "npm run docs && gh-pages -d docs",
+    "prettier": "./node_modules/.bin/prettier --single-quote true --write ./src/**/*.ts ./test/**/*.ts"
   },
   "engines": {
     "node": ">=6.9.1"
