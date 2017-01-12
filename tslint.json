@@ -24,7 +24,7 @@
             "single"
         ],
         "semicolon": [
-            true,
+            false,
             "always"
         ],
         "triple-equals": [
