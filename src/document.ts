@@ -1,6 +1,6 @@
 import { Tyr } from 'tyranid';
-import { formatName } from './util';
-import { addField } from './field';
+import { formatName, pad } from './util';
+import { addField, addComment } from './field';
 import { EnumIdAliasLookup } from './collection';
 
 /**
@@ -38,17 +38,18 @@ export function generateDocumentInterface(
     const def = fields[field]['def'];
     if (def) {
       const required = field === '_id' || def.required;
+      const indent = 4;
       const fieldName = field + (required ? '' : '?');
       const fieldType = addField({
         name: field,
         def: def,
-        indent: 4,
+        indent,
         siblingFields: fields,
         colName: name,
         enumCollectionIdLookup
       });
 
-      properties.push(`${fieldName}: ${fieldType};`);
+      properties.push(addComment(def, indent - 1) + `${fieldName}: ${fieldType};`);
     }
   }
 
@@ -60,7 +61,7 @@ export function generateDocumentInterface(
      * Document returned by collection "${name}" <${colInterfaceName}>
      */
     export interface ${interfaceName} extends Tyr.Document {
-      ${properties.join('\n      ')}
+      ${properties.join('\n' + pad('', 3))}
     }
     `
   };

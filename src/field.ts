@@ -1,5 +1,6 @@
 import { pad, formatName } from './util';
 import { EnumIdAliasLookup } from './collection';
+import { Tyr } from 'tyranid';
 
 function assignableToString(fieldName: string) {
   switch (fieldName) {
@@ -14,15 +15,32 @@ function assignableToString(fieldName: string) {
   return false;
 }
 
+
+export function addComment(
+  field: Tyr.FieldDefinition,
+  indent: number
+) {
+  let out = ''
+  if (field.note) {
+    out += '/*\n';
+    out += pad(' * ' + field.note, indent);
+    out += '\n';
+    out += pad(' */', indent);
+    out += '\n' + pad('', indent);
+  }
+  return out;
+}
+
+
 /**
  *
- * given an field definition, emmit a type definition
+ * given an field definition, emit a type definition
  *
  */
 export function addField(
   opts: {
     name: string,
-    def: any,
+    def: Tyr.FieldDefinition,
     indent: number,
     enumCollectionIdLookup: EnumIdAliasLookup,
     parent?: string,
@@ -143,12 +161,13 @@ export function addField(
 
         const keyType = assignableToString(def.keys.is) ? 'string' : 'number';
 
-        let obj = '{';
-        obj += '\n';
-        obj += pad(`[key: ${keyType}]: ${subType} | void ;`, indent);
-        obj += '\n';
-        obj += pad('}', indent - 1);
-        return obj;
+        let out = '';
+        out += '{';
+        out += '\n';
+        out += pad(`[key: ${keyType}]: ${subType} | void ;`, indent);
+        out += '\n';
+        out += pad('}', indent - 1);
+        return out;
       }
 
       const subFields = def.fields;
@@ -161,8 +180,9 @@ export function addField(
       let obj = '{';
 
       for (const sub of subFieldKeys) {
+        const subDef = subFields[sub].def;
         const required = sub === '_id' || subFields[sub].required ||
-          subFields[sub].def && subFields[sub].def.required;
+          subDef && subDef.required;
         obj += '\n';
         const subName = sub + (required ? '' : '?');
         const subType = addField({
@@ -172,7 +192,10 @@ export function addField(
           siblingFields: subFields,
           enumCollectionIdLookup
         });
-        obj += pad(`${subName}: ${subType};`, indent);
+        const fieldDef = `${subName}: ${subType};`;
+        const comment = (subDef && addComment(subDef, indent)) || '';
+        obj += comment ? pad(comment, indent) : '';
+        obj += comment ? fieldDef : pad(fieldDef, indent);
       }
 
       obj += '\n';

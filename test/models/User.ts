@@ -10,9 +10,19 @@ export default new Tyr.Collection({
     email: { is: 'email' },
     skills: {
       is: 'array',
+      note: 'A list of skills that the user has.',
       of: {
         is: 'object',
-        fields: { years: { is: 'integer' }, name: { is: 'string' } }
+        note: 'A sub document comment',
+        fields: {
+          years: {
+            is: 'integer'
+          },
+          name: {
+            is: 'string',
+            note: 'The name of a skill that the user has.'
+          }
+        }
       }
     }
   }
