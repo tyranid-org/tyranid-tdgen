@@ -66,10 +66,11 @@ export function generateEnumCollectionIdTypeAlias(
 export function generateCollectionInstanceInterface(
   opts: {
     col: Tyr.GenericCollection,
-    enumCollectionIdLookup: EnumIdAliasLookup
+    enumCollectionIdLookup: EnumIdAliasLookup,
+    commentLineWidth?: number
   }
 ): CollectionInterfaceDeclaration {
-  const { col, enumCollectionIdLookup } = opts;
+  const { col, enumCollectionIdLookup, commentLineWidth } = opts;
 
   const {
     name,
@@ -81,7 +82,8 @@ export function generateCollectionInstanceInterface(
   const doc = generateDocumentInterface({
     col,
     colInterfaceName: interfaceName,
-    enumCollectionIdLookup
+    enumCollectionIdLookup,
+    commentLineWidth
   });
 
   const properties: string[] = [];

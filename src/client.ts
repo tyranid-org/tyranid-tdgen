@@ -43,7 +43,10 @@ declare module 'tyranid-client' {
       $id: string;
     }
 
-${generateModule(collections, true)}
+${generateModule(collections, {
+  client: true,
+  commentLineWidth: passedOptions.commentLineWidth
+})}
   }
 
 }

@@ -1,4 +1,4 @@
-import { pad, formatName } from './util';
+import { pad, formatName, wordWrap } from './util';
 import { EnumIdAliasLookup } from './collection';
 import { Tyr } from 'tyranid';
 
@@ -18,12 +18,18 @@ function assignableToString(fieldName: string) {
 
 export function addComment(
   field: Tyr.FieldDefinition,
-  indent: number
+  indent: number,
+  width = 80
 ) {
   let out = ''
   if (field.note) {
+    const lines = wordWrap(field.note, width);
+
     out += '/*\n';
-    out += pad(' * ' + field.note, indent);
+    let line: string | undefined = '';
+    while (line = lines.shift()) {
+      out += pad(' * ' + line + (lines.length === 0 ? '' : '\n'), indent);
+    }
     out += '\n';
     out += pad(' */', indent);
     out += '\n' + pad('', indent);
@@ -46,7 +52,8 @@ export function addField(
     parent?: string,
     colName?: string,
     siblingFields?: { [key: string]: any },
-    noPopulatedProperty?: boolean
+    noPopulatedProperty?: boolean,
+    commentLineWidth?: number
   }
 ): string {
   let {
@@ -57,6 +64,7 @@ export function addField(
     siblingFields,
     enumCollectionIdLookup,
     colName,
+    commentLineWidth,
     noPopulatedProperty = false
   } = opts;
 
@@ -193,7 +201,7 @@ export function addField(
           enumCollectionIdLookup
         });
         const fieldDef = `${subName}: ${subType};`;
-        const comment = (subDef && addComment(subDef, indent)) || '';
+        const comment = (subDef && addComment(subDef, indent, commentLineWidth)) || '';
         obj += comment ? pad(comment, indent) : '';
         obj += comment ? fieldDef : pad(fieldDef, indent);
       }

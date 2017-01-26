@@ -19,7 +19,9 @@ import { Tyr } from 'tyranid';
 declare module 'tyranid' {
 
   namespace Tyr {
-${generateModule(collections)}
+${generateModule(collections, {
+  commentLineWidth: passedOptions.commentLineWidth
+})}
   }
 
 }

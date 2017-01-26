@@ -9,6 +9,12 @@ import {
 } from './collection';
 
 
+export interface GenerateModuleOptions {
+  client?: boolean;
+  commentLineWidth?: number;
+}
+
+
 /**
  * create a type definition file for tyranid collections,
  * expects the following types to be in scope:
@@ -20,8 +26,9 @@ import {
  */
 export function generateModule(
   collections: Tyr.GenericCollection[],
-  client?: boolean
+  opts: GenerateModuleOptions = {}
 ) {
+  const { client, commentLineWidth } = opts;
 
   const byNameEntries: string[] = [];
   const byIdEntries: string[] = [];
@@ -49,7 +56,9 @@ export function generateModule(
 
   const collectionInterfaces = _.chain(collections)
     .sortBy(col => col.def.name)
-    .map(col => generateCollectionInstanceInterface({ col, enumCollectionIdLookup }))
+    .map(col => generateCollectionInstanceInterface({
+      col, enumCollectionIdLookup, commentLineWidth
+    }))
     .value();
 
 

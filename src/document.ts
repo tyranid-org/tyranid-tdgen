@@ -20,10 +20,11 @@ export function generateDocumentInterface(
   opts: {
     col: Tyr.GenericCollection,
     colInterfaceName: string,
-    enumCollectionIdLookup: EnumIdAliasLookup
+    enumCollectionIdLookup: EnumIdAliasLookup,
+    commentLineWidth?: number
   }
 ): DocumentInterfaceDeclaration {
-  const { col, colInterfaceName, enumCollectionIdLookup } = opts;
+  const { col, colInterfaceName, enumCollectionIdLookup, commentLineWidth } = opts;
   const { name, fields } = col.def;
   const interfaceName = `${formatName(name)}`;
   const properties: string[] = [];
@@ -46,10 +47,11 @@ export function generateDocumentInterface(
         indent,
         siblingFields: fields,
         colName: name,
-        enumCollectionIdLookup
+        enumCollectionIdLookup,
+        commentLineWidth
       });
 
-      properties.push(addComment(def, indent - 1) + `${fieldName}: ${fieldType};`);
+      properties.push(addComment(def, indent - 1, commentLineWidth) + `${fieldName}: ${fieldType};`);
     }
   }
 
