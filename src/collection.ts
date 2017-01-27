@@ -1,6 +1,6 @@
 import { Tyr } from 'tyranid';
 import * as _ from 'lodash';
-import { pad, formatName, taggedUnion } from './util';
+import { pad, formatName, wrappedUnionType } from './util';
 import { DocumentInterfaceDeclaration, generateDocumentInterface } from './document';
 
 
@@ -44,7 +44,6 @@ export function generateEnumCollectionIdTypeAlias(
   if (!('_id' in values[0])) return;
 
   const idTypeAlias = `${formatName(name)}Id`;
-  const idType = taggedUnion(values, '_id');
 
   return {
     col,
@@ -53,7 +52,8 @@ export function generateEnumCollectionIdTypeAlias(
     /**
      * Type alias for enum id values in "${name}" collection
      */
-    export type ${idTypeAlias} = ${idType};
+    export type ${idTypeAlias} =
+      ${wrappedUnionType(values, '_id', 3)};
     `
   };
 }

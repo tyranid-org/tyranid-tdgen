@@ -43,7 +43,7 @@ export function pad(str: string, n: number) {
 /**
  * create a tagged union type from an array of primatives
  */
-export function taggedUnion(arr: any[], prop?: string): string {
+export function unionType(arr: any[], prop?: string): string {
   return _
     .chain(arr)
     .map(el => prop ? _.get(el, prop) : el)
@@ -54,6 +54,17 @@ export function taggedUnion(arr: any[], prop?: string): string {
 }
 
 
+export function wrappedUnionType(arr: any[], prop?: string, indent?: number) {
+  const idType = unionType(arr, prop);
+  return wordWrap(idType, {
+      split: /\|/g,
+      breakWords: false,
+      join: '|'
+    })
+    .join('\n' + pad(' |', indent - 1));
+}
+
+
 /**
  *
  * split a string into lines of a certain width
@@ -61,29 +72,43 @@ export function taggedUnion(arr: any[], prop?: string): string {
  */
 export function wordWrap(
   str: string,
-  width = 80
+  opts: number | {
+    width?: number,
+    split?: RegExp,
+    join?: string,
+    breakWords?: boolean
+  } = {}
 ): string[] {
+  let {
+    width = 80,
+    split = /\s+/g,
+    join = ' ',
+    breakWords = true
+  } = typeof opts === 'number' ? { width: opts } : opts;
+
   const lines: string[] = [];
-  const words = str.trim().split(/\s+/g);
-  const SPACE = ' ';
+  const words = str.trim().split(split);
   const HYPHEN = '-';
 
   let line = '';
   let word: string | undefined;
 
   while (word = words.shift()) {
-
-    if ((line.length + SPACE.length + word.length) <= width) {
-      line += SPACE + word;
+    if ((line.length + join.length + word.length) <= width) {
+      line += join + word;
     } else if (line.length < width) {
 
       const remainingChars = width - line.length;
 
       if (remainingChars > 1) {
-        if (word.length >= width) {
-          const substringLength = remainingChars - SPACE.length - HYPHEN.length;
+
+        if (!breakWords || (word.length < width)) {
+          lines.push(line.trim());
+          line = word;
+        } else  {
+          const substringLength = remainingChars - join.length - HYPHEN.length;
           line += (
-            SPACE +
+            join +
             word.substring(0, substringLength) +
             HYPHEN
           );
@@ -98,10 +123,8 @@ export function wordWrap(
           }
 
           line = word;
-        } else {
-          lines.push(line.trim());
-          line = word;
         }
+
       } else {
         lines.push(line.trim());
         line = word;
@@ -109,12 +132,11 @@ export function wordWrap(
 
     } else {
       lines.push(line.trim());
-      line = '';
+      line = word;
     }
-
   }
 
   if (line) lines.push(line);
 
-  return lines;
+  return lines.map(l => l.startsWith(join) ? l.replace(join, '') : l);
 }

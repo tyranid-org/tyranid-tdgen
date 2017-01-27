@@ -93,3 +93,14 @@ test('Word wrap should handle words longer than the line width', (t) => {
   split.sort();
   t.deepEqual(wrappedWords, split);
 });
+
+
+test('Should be able to break union type', (t) => {
+  const unionType = `activeStatus|activityLog|activityLogType|agendaJob|agendaJobLog|answerStatus|application|approvalStatus|biMapEntry|calendarEvent|category|communicationRank|completionStatus|createdFromType|csvReport|dashboard|dashboardPanel|dataAdapter|dataAdapterRunStat|dataAdapterStatus|dataAdapterType|daySetting|dayTask|edgeMap|extEntity|feature|file|graclPermission|group|groupCommunicationInfluence|groupStatus|img|invite|inviteStatus|inviteType|itemSelection|language|layout|license|licenseType|logPromotionCategory|lookupType|lookupVal|metric|metricAdapterEntityType|metricData|metricObservation|metricObservationType|metricStatus|metricTarget|metricTargetType|migrationStatus|notification|notificationStatus|notificationSubType|notificationTaskStatus|notificationType|onaBetweennessCentralityScore|onaGraph|orgImport|orgImportStatus|organization|organizationStatus|outbrief|pageStatus|passwordPolicy|paymentLog|paymentLogType|presentationForum|presentationForumSession|presentationForumSessionStatus|presentationForumStatus|presentationStatus|presentationTemplate|question|questionDataType|questionInstanceDisplayType|questionInstanceStatus|questionLanguage|questionPersonType|questionStatus|questionType|respondent|response|review|reviewGroup|reviewReport|reviewStatus|skill|sliderValueDisplayType|spreadsheetTemplate|spreadsheetTemplateMappingType|sso|ssoStatus|ssoType|survey|surveyLanguage|surveyMessage|surveyMessageStatus|surveyMessageType|surveyResponse|surveyStatus|surveyType|tag|tinyString|tmFilter|tmLog|tmPriority|translation|triangleLayer|triangleLayerItem|triangleLayerItemActiveStatusType|triangleLayerItemDependencyStatus|triangleLayerItemDependencyType|triangleLayerItemLayerType|triangleLayerItemMetricThresholdType|triangleLayerItemOrder|triangleLayerItemStatus|triangleLayerItemStatusColor|triangleLayerItemStatusType|triangleLayerItemTaskStatus|triangleLayerItemTaskType|triangleLayerItemUpdateFrequency|triangleLayerItemUpdateStatus|trianglePresentationNotes|tyrLog|tyrLogEvent|tyrLogLevel|tyrSchema|tyrSchemaType|tyrUserAgent|unit|unitFactor|unitSystem|unitType|user|userCommunicationPercentile|userEmailData|userLandingFeature|userStatus|view|whiteLabel|workflow|workflowState|workflowType`;
+  const wrapped = wordWrap(unionType, { split: /\|/, breakWords: false, join: '|' });
+  const postWrapping = wrapped.join('|').split('|');
+  const union = unionType.split('|');
+  t.deepEqual(unionType, wrapped.join('|'));
+  t.deepEqual(postWrapping, union);
+});
+

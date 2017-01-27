@@ -1,6 +1,6 @@
 import { Tyr } from 'tyranid';
 import * as _ from 'lodash';
-import { taggedUnion } from './util';
+import { wrappedUnionType } from './util';
 import {
   generateCollectionInstanceInterface,
   generateEnumCollectionIdTypeAlias,
@@ -92,12 +92,14 @@ export function generateModule(
     /**
      * Union type of all current collection names
      */
-    export type CollectionName = ${taggedUnion(Tyr.collections, 'def.name')};
+    export type CollectionName =
+      ${wrappedUnionType(Tyr.collections, 'def.name', 3)};
 
     /**
      * Union type of all current collection ids
      */
-    export type CollectionId = ${taggedUnion(Tyr.collections, 'def.id')};
+    export type CollectionId =
+      ${wrappedUnionType(Tyr.collections, 'def.id', 3)};
   `;
 
   return definitions;
