@@ -56,11 +56,8 @@ export function unionType(arr: any[], prop?: string): string {
 
 export function wrappedUnionType(arr: any[], prop?: string, indent?: number) {
   const idType = unionType(arr, prop);
-  return wordWrap(idType, {
-      split: /\|/g,
-      breakWords: false,
-      join: '|'
-    })
+
+  return idType.split('|')
     .join('\n' + pad(' |', indent - 1));
 }
 
