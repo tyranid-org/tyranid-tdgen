@@ -98,7 +98,7 @@ export function generateCollectionInstanceInterface(
       for (const row of rows) {
         let obj = '{';
         for (const key in row) {
-          if (row[key]) {
+          if (typeof row[key] !== 'undefined') {
 
             // for enum values, reproduce constant values literally
             const literalString = typeof row[key] === 'string';
