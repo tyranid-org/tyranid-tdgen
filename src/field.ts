@@ -15,19 +15,18 @@ function assignableToString(fieldName: string) {
   return false;
 }
 
-
 export function addComment(
   field: Tyr.FieldDefinition,
   indent: number,
   width = 80
 ) {
-  let out = ''
+  let out = '';
   if (field.note) {
     const lines = wordWrap(field.note, width);
 
     out += '/*\n';
     let line: string | undefined = '';
-    while (line = lines.shift()) {
+    while ((line = lines.shift())) {
       out += pad(' * ' + line + (lines.length === 0 ? '' : '\n'), indent);
     }
     out += '\n';
@@ -37,25 +36,22 @@ export function addComment(
   return out;
 }
 
-
 /**
  *
  * given an field definition, emit a type definition
  *
  */
-export function addField(
-  opts: {
-    name: string,
-    def: Tyr.FieldDefinition,
-    indent: number,
-    enumCollectionIdLookup: EnumIdAliasLookup,
-    parent?: string,
-    colName?: string,
-    siblingFields?: { [key: string]: any },
-    noPopulatedProperty?: boolean,
-    commentLineWidth?: number
-  }
-): string {
+export function addField(opts: {
+  name: string;
+  def: Tyr.FieldDefinition;
+  indent: number;
+  enumCollectionIdLookup: EnumIdAliasLookup;
+  parent?: string;
+  colName?: string;
+  siblingFields?: { [key: string]: any };
+  noPopulatedProperty?: boolean;
+  commentLineWidth?: number;
+}): string {
   let {
     name,
     def,
@@ -73,8 +69,7 @@ export function addField(
    * TODO: tyranid typings need to be fixed
    *
    */
-  if (def.def)
-    def = def.def;
+  if (def.def) def = def.def;
 
   // if the field is `_id` and the collection is an enum, use the type alias
   if (name === '_id' && colName && colName in enumCollectionIdLookup) {
@@ -92,15 +87,14 @@ export function addField(
       : 'ObjectID';
 
     // add populated prop too
-    if (parent === 'array' || noPopulatedProperty)
-      return linkIdType;
+    if (parent === 'array' || noPopulatedProperty) return linkIdType;
     // TODO: better parser will add optional array populated prop
     let out = '';
     out += `${linkIdType};\n`;
 
     const deIded = name.replace(/Id$/, '');
     let replacementName = !/Id$/.test(name) ||
-      siblingFields && deIded in siblingFields
+      (siblingFields && deIded in siblingFields)
       ? `${name}$`
       : deIded;
 
@@ -138,12 +132,12 @@ export function addField(
     case 'array': {
       return `${def.of
         ? addField({
-          name,
-          def: def.of,
-          indent,
-          parent: 'array',
-          enumCollectionIdLookup
-        })
+            name,
+            def: def.of,
+            indent,
+            parent: 'array',
+            enumCollectionIdLookup
+          })
         : 'any'}[]`;
     }
 
@@ -151,7 +145,7 @@ export function addField(
       if (def.keys && def.of) {
         if (
           !def.keys.is ||
-            !assignableToString(def.keys.is) && def.keys.is !== 'integer'
+          (!assignableToString(def.keys.is) && def.keys.is !== 'integer')
         ) {
           console.warn(
             `Invalid key type: ${JSON.stringify(def.keys)} defaulting to any`
@@ -180,7 +174,7 @@ export function addField(
 
       const subFields = def.fields;
 
-      if (!subFields || Array.isArray(subFields) && !subFields.length)
+      if (!subFields || (Array.isArray(subFields) && !subFields.length))
         return 'any';
       const subFieldKeys = Object.keys(subFields);
       subFieldKeys.sort();
@@ -189,8 +183,10 @@ export function addField(
 
       for (const sub of subFieldKeys) {
         const subDef = subFields[sub].def;
-        const required = sub === '_id' || subFields[sub].required ||
-          subDef && subDef.required;
+        const required =
+          sub === '_id' ||
+          subFields[sub].required ||
+          (subDef && subDef.required);
         obj += '\n';
         const subName = sub + (required ? '' : '?');
         const subType = addField({
@@ -201,7 +197,8 @@ export function addField(
           enumCollectionIdLookup
         });
         const fieldDef = `${subName}: ${subType};`;
-        const comment = (subDef && addComment(subDef, indent, commentLineWidth)) || '';
+        const comment =
+          (subDef && addComment(subDef, indent, commentLineWidth)) || '';
         obj += comment ? pad(comment, indent) : '';
         obj += comment ? fieldDef : pad(fieldDef, indent);
       }
@@ -213,6 +210,5 @@ export function addField(
 
     default:
       return 'any';
-
   }
 }

@@ -33,9 +33,8 @@ const CWD = process.cwd();
 /**
  * @private
  */
-const Tyr = require(
-  path.join(CWD, './node_modules/tyranid/dist/tyranid.js')
-).Tyr;
+const Tyr = require(path.join(CWD, './node_modules/tyranid/dist/tyranid.js'))
+  .Tyr;
 
 /**
  * @private
@@ -63,8 +62,7 @@ program
  * Run command
  */
 (async () => {
-  if (!fileGlob)
-    return program.help();
+  if (!fileGlob) return program.help();
 
   const db = await mongodb.MongoClient.connect(
     `${program['mongodbHost'] || DEFAULT_HOST}/${program['databaseName'] ||
@@ -75,7 +73,7 @@ program
     ? fileGlob
     : path.join(CWD, fileGlob);
 
-  Tyr.config({ db: db, validate: [ { glob: globToUse } ] });
+  Tyr.config({ db: db, validate: [{ glob: globToUse }] });
 
   const stream = generateStream(Tyr.collections);
 

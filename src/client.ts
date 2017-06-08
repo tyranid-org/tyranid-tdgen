@@ -44,9 +44,9 @@ declare module 'tyranid-client' {
     }
 
 ${generateModule(collections, {
-  client: true,
-  commentLineWidth: passedOptions.commentLineWidth
-})}
+    client: true,
+    commentLineWidth: passedOptions.commentLineWidth
+  })}
   }
 
 }

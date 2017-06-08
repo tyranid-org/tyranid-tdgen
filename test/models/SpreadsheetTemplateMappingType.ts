@@ -8,5 +8,5 @@ export const SpreadsheetTemplateMappingType = new Tyr.Collection({
   name: 'spreadsheetTemplateMappingType',
   enum: true,
   fields: { _id: { is: 'integer' }, name: { is: 'string', labelField: true } },
-  values: [ [ '_id', 'name' ], [0, 'None'], [ 1, 'Tabular' ], [ 2, 'Cell' ] ]
+  values: [['_id', 'name'], [0, 'None'], [1, 'Tabular'], [2, 'Cell']]
 });

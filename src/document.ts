@@ -7,30 +7,32 @@ import { EnumIdAliasLookup } from './collection';
  * generated interface for tyranid document type,
  * with metadata
  */
-export interface DocumentInterfaceDeclaration  {
-  interfaceName: string,
-  name: string,
-  declaration: string
+export interface DocumentInterfaceDeclaration {
+  interfaceName: string;
+  name: string;
+  declaration: string;
 }
 
 /**
  * generate interface for tyranid document type
  */
-export function generateDocumentInterface(
-  opts: {
-    col: Tyr.GenericCollection,
-    colInterfaceName: string,
-    enumCollectionIdLookup: EnumIdAliasLookup,
-    commentLineWidth?: number
-  }
-): DocumentInterfaceDeclaration {
-  const { col, colInterfaceName, enumCollectionIdLookup, commentLineWidth } = opts;
+export function generateDocumentInterface(opts: {
+  col: Tyr.GenericCollection;
+  colInterfaceName: string;
+  enumCollectionIdLookup: EnumIdAliasLookup;
+  commentLineWidth?: number;
+}): DocumentInterfaceDeclaration {
+  const {
+    col,
+    colInterfaceName,
+    enumCollectionIdLookup,
+    commentLineWidth
+  } = opts;
   const { name, fields } = col.def;
   const interfaceName = `${formatName(name)}`;
   const properties: string[] = [];
 
-  if (!fields)
-    throw new Error(`Collection "${name}" has no fields!`);
+  if (!fields) throw new Error(`Collection "${name}" has no fields!`);
 
   const fieldKeys = Object.keys(fields);
   fieldKeys.sort();
@@ -51,7 +53,10 @@ export function generateDocumentInterface(
         commentLineWidth
       });
 
-      properties.push(addComment(def, indent - 1, commentLineWidth) + `${fieldName}: ${fieldType};`);
+      properties.push(
+        addComment(def, indent - 1, commentLineWidth) +
+          `${fieldName}: ${fieldType};`
+      );
     }
   }
 

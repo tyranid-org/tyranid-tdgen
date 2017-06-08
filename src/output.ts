@@ -11,7 +11,7 @@ export interface DefinitionGenerationOptions extends InterfaceGenerationOptions 
    * generate client side definitions instead of server
    *
    */
-  client?: boolean
+  client?: boolean;
 }
 
 function resolveGenerationMethod(opts: DefinitionGenerationOptions = {}) {
@@ -77,15 +77,12 @@ export function generateFile(
     try {
       const td = resolveGenerationMethod(opts)(collections, opts);
       fs.writeFile(filename, td, err => {
-        if (err)
-          rej(err);
-        if (cb)
-          cb(err, td);
+        if (err) rej(err);
+        if (cb) cb(err, td);
         res(td);
       });
     } catch (err) {
-      if (cb)
-        cb(err);
+      if (cb) cb(err);
       rej(err);
     }
   });

@@ -6,7 +6,8 @@ function run() {
     doc.email;
   });
 
-  const t: Tyr.SpreadsheetTemplateMappingTypeId = Tyr.byName.spreadsheetTemplateMappingType.TABULAR._id;
+  const t: Tyr.SpreadsheetTemplateMappingTypeId =
+    Tyr.byName.spreadsheetTemplateMappingType.TABULAR._id;
   t === 1;
 }
 

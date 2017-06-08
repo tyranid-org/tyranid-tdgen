@@ -8,18 +8,18 @@
     "tyranid-tdgen": "bin/tyranid-tdgen"
   },
   "scripts": {
-    "build": "rm -rf ./dist/ && npm run lint && npm run tsc",
+    "build": "rm -rf ./dist/ && npm run tsc",
     "pretest": "npm run build",
     "prepublish": "npm run test",
     "ava": "./node_modules/.bin/nyc ./node_modules/.bin/ava",
     "test": "npm run ava && npm run compile-test",
     "compile-test": "mkdir -p ./generated && ./node_modules/.bin/tsc -p ./test/compile-test/ && ./node_modules/.bin/tsc -p ./test/compile-client/",
     "tsc": "./node_modules/typescript/bin/tsc -d --pretty",
-    "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json ./{test,lib}/**/*.ts && echo '> \\033[0;32mlinter passed!\\033[0m'",
     "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && ./node_modules/.bin/codecov",
     "docs": "typedoc --options typedoc.json src",
     "gh-pages": "npm run docs && gh-pages -d docs",
-    "prettier": "./node_modules/.bin/prettier --single-quote true --write ./src/**/*.ts ./test/**/*.ts"
+    "prettier": "./node_modules/.bin/prettier --single-quote --write ./src/**/*.ts ./test/**/*.ts",
+    "precommit": "npm run prettier && npm test"
   },
   "engines": {
     "node": ">=6.9.1"
@@ -30,15 +30,15 @@
     "ava": "0.16.0",
     "codecov": "1.0.1",
     "gh-pages": "^0.12.0",
+    "husky": "^0.13.4",
     "nyc": "8.3.0",
-    "prettier": "^0.0.5",
-    "tslint": "3.15.1",
-    "typedoc": "^0.5.3",
-    "typescript": "2.1.4",
-    "tyranid": "0.1.17"
+    "prettier": "^1.4.4",
+    "typedoc": "^0.7.1",
+    "typescript": "2.3.4",
+    "tyranid": "0.1.57"
   },
   "peerDependencies": {
-    "tyranid": "^0.1.15"
+    "tyranid": "^0.1.57"
   },
   "ava": {
     "files": [
@@ -51,8 +51,8 @@
     ]
   },
   "dependencies": {
-    "@types/commander": "2.3.30",
-    "@types/lodash": "4.14.43",
+    "@types/commander": "2.9.1",
+    "@types/lodash": "4.14.65",
     "@types/node": "6.0.52",
     "commander": "2.9.0",
     "lodash": "4.17.2"

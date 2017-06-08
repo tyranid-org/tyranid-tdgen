@@ -5,4 +5,4 @@ export default new Tyr.Collection({
   name: 'linked',
   dbName: 'linked',
   fields: { _id: { is: 'mongoid' }, name: { is: 'string' } }
-})
+});

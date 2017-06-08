@@ -20,8 +20,8 @@ declare module 'tyranid' {
 
   namespace Tyr {
 ${generateModule(collections, {
-  commentLineWidth: passedOptions.commentLineWidth
-})}
+    commentLineWidth: passedOptions.commentLineWidth
+  })}
   }
 
 }

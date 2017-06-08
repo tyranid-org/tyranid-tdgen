@@ -29,11 +29,9 @@ export function pad(str: string, n: number) {
   let indent = '';
   let curr = '  ';
   while (true) {
-    if (n & 1)
-      indent += curr;
+    if (n & 1) indent += curr;
     n >>>= 1;
-    if (n <= 0)
-      break;
+    if (n <= 0) break;
     curr += curr;
   }
 
@@ -44,23 +42,19 @@ export function pad(str: string, n: number) {
  * create a tagged union type from an array of primatives
  */
 export function unionType(arr: any[], prop?: string): string {
-  return _
-    .chain(arr)
-    .map(el => prop ? _.get(el, prop) : el)
+  return _.chain(arr)
+    .map(el => (prop ? _.get(el, prop) : el))
     .sortBy()
-    .map(v => typeof v === 'string' ? `'${v}'` : v)
+    .map(v => (typeof v === 'string' ? `'${v}'` : v))
     .join('|')
     .value();
 }
 
-
-export function wrappedUnionType(arr: any[], prop?: string, indent?: number) {
+export function wrappedUnionType(arr: any[], prop: string, indent: number) {
   const idType = unionType(arr, prop);
 
-  return idType.split('|')
-    .join('\n' + pad(' |', indent - 1));
+  return idType.split('|').join('\n' + pad(' |', indent - 1));
 }
-
 
 /**
  *
@@ -69,12 +63,14 @@ export function wrappedUnionType(arr: any[], prop?: string, indent?: number) {
  */
 export function wordWrap(
   str: string,
-  opts: number | {
-    width?: number,
-    split?: RegExp,
-    join?: string,
-    breakWords?: boolean
-  } = {}
+  opts:
+    | number
+    | {
+        width?: number;
+        split?: RegExp;
+        join?: string;
+        breakWords?: boolean;
+      } = {}
 ): string[] {
   let {
     width = 80,
@@ -90,25 +86,19 @@ export function wordWrap(
   let line = '';
   let word: string | undefined;
 
-  while (word = words.shift()) {
-    if ((line.length + join.length + word.length) <= width) {
+  while ((word = words.shift())) {
+    if (line.length + join.length + word.length <= width) {
       line += join + word;
     } else if (line.length < width) {
-
       const remainingChars = width - line.length;
 
       if (remainingChars > 1) {
-
-        if (!breakWords || (word.length < width)) {
+        if (!breakWords || word.length < width) {
           lines.push(line.trim());
           line = word;
-        } else  {
+        } else {
           const substringLength = remainingChars - join.length - HYPHEN.length;
-          line += (
-            join +
-            word.substring(0, substringLength) +
-            HYPHEN
-          );
+          line += join + word.substring(0, substringLength) + HYPHEN;
           lines.push(line.trim());
 
           word = word.substring(substringLength);
@@ -121,12 +111,10 @@ export function wordWrap(
 
           line = word;
         }
-
       } else {
         lines.push(line.trim());
         line = word;
       }
-
     } else {
       lines.push(line.trim());
       line = word;
@@ -135,5 +123,5 @@ export function wordWrap(
 
   if (line) lines.push(line);
 
-  return lines.map(l => l.startsWith(join) ? l.replace(join, '') : l);
+  return lines.map(l => (l.startsWith(join) ? l.replace(join, '') : l));
 }

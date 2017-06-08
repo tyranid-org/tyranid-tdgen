@@ -8,12 +8,10 @@ import {
   EnumIdAliasLookup
 } from './collection';
 
-
 export interface GenerateModuleOptions {
   client?: boolean;
   commentLineWidth?: number;
 }
-
 
 /**
  * create a type definition file for tyranid collections,
@@ -35,7 +33,6 @@ export function generateModule(
   const collectionInterfaceDeclarations: string[] = [];
   const documentInterfaceDeclarations: string[] = [];
 
-
   /**
    * get enum value type literal definitions for use in links
    */
@@ -48,19 +45,21 @@ export function generateModule(
     .reduce((out, alias: EnumCollectionIdTypeAlias) => {
       out[alias.col.def.name] = alias;
       return out;
-    }, <EnumIdAliasLookup> {})
+    }, <EnumIdAliasLookup>{})
     .value();
 
   const enumCollectionIdAliases = enumCollectionIdChain.value();
 
-
   const collectionInterfaces = _.chain(collections)
     .sortBy(col => col.def.name)
-    .map(col => generateCollectionInstanceInterface({
-      col, enumCollectionIdLookup, commentLineWidth
-    }))
+    .map(col =>
+      generateCollectionInstanceInterface({
+        col,
+        enumCollectionIdLookup,
+        commentLineWidth
+      })
+    )
     .value();
-
 
   for (const colInt of collectionInterfaces) {
     const { name, id, doc, interfaceName, declaration } = colInt;
@@ -87,7 +86,10 @@ export function generateModule(
 
     ${collectionInterfaceDeclarations.join('')}
     ${documentInterfaceDeclarations.join('')}
-    ${enumCollectionIdAliases.map(a => a.declaration).join('')}
+    ${enumCollectionIdAliases
+      .filter(a => !!a)
+      .map(a => a!.declaration)
+      .join('')}
 
     /**
      * Union type of all current collection names
