@@ -72,12 +72,8 @@ export function wordWrap(
         breakWords?: boolean;
       } = {}
 ): string[] {
-  let {
-    width = 80,
-    split = /\s+/g,
-    join = ' ',
-    breakWords = true
-  } = typeof opts === 'number' ? { width: opts } : opts;
+  let { width = 80, split = /\s+/g, join = ' ', breakWords = true } =
+    typeof opts === 'number' ? { width: opts } : opts;
 
   const lines: string[] = [];
   const words = str.trim().split(split);

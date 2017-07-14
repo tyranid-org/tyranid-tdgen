@@ -69,9 +69,8 @@ program
       DEFAULT_DBNAME}`
   );
 
-  const globToUse = path.resolve(fileGlob) === fileGlob
-    ? fileGlob
-    : path.join(CWD, fileGlob);
+  const globToUse =
+    path.resolve(fileGlob) === fileGlob ? fileGlob : path.join(CWD, fileGlob);
 
   Tyr.config({ db: db, validate: [{ glob: globToUse }] });
 

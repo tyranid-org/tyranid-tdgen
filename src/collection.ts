@@ -10,7 +10,8 @@ import {
  * generated interface for tyranid collection type,
  * with metadata
  */
-export interface CollectionInterfaceDeclaration extends DocumentInterfaceDeclaration {
+export interface CollectionInterfaceDeclaration
+  extends DocumentInterfaceDeclaration {
   id: string;
   doc: DocumentInterfaceDeclaration;
 }

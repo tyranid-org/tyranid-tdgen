@@ -1,5 +1,1 @@
-
-
-export function generateBaseInterface(opts: any) {
-
-}
+export function generateBaseInterface(opts: any) {}

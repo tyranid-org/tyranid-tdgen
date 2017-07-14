@@ -5,7 +5,8 @@ import { InterfaceGenerationOptions } from './util';
 import { generateServerDefinitionFile } from './server';
 import { generateClientDefinitionFile } from './client';
 
-export interface DefinitionGenerationOptions extends InterfaceGenerationOptions {
+export interface DefinitionGenerationOptions
+  extends InterfaceGenerationOptions {
   /**
    *
    * generate client side definitions instead of server

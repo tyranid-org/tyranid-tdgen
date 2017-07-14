@@ -82,9 +82,10 @@ export function addField(opts: {
    *
    */
   if (def.link) {
-    const linkIdType = def.link in enumCollectionIdLookup
-      ? enumCollectionIdLookup[def.link].idTypeAlias
-      : 'ObjectID';
+    const linkIdType =
+      def.link in enumCollectionIdLookup
+        ? enumCollectionIdLookup[def.link].idTypeAlias
+        : 'ObjectID';
 
     // add populated prop too
     if (parent === 'array' || noPopulatedProperty) return linkIdType;
@@ -93,10 +94,10 @@ export function addField(opts: {
     out += `${linkIdType};\n`;
 
     const deIded = name.replace(/Id$/, '');
-    let replacementName = !/Id$/.test(name) ||
-      (siblingFields && deIded in siblingFields)
-      ? `${name}$`
-      : deIded;
+    let replacementName =
+      !/Id$/.test(name) || (siblingFields && deIded in siblingFields)
+        ? `${name}$`
+        : deIded;
 
     out += pad(`${replacementName}?: ${formatName(def.link)}`, indent - 1);
     return out;
