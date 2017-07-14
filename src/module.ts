@@ -25,37 +25,26 @@ export function generateModule(
   opts: GenerateModuleOptions = {}
 ) {
   const { client, commentLineWidth } = opts;
-
   const byNameEntries: string[] = [];
   const byIdEntries: string[] = [];
   const cols: string[] = [];
   const docs: string[] = [];
   const bases: string[] = [];
+  const enumIds: string[] = [];
 
-  /**
-   * get enum value type literal definitions for use in links
-   */
-  const enumCollectionIdAliases = _.chain(collections)
-    .filter(col => col.def.enum)
-    .sortBy(col => col.def.name)
-    .map(enumIdAlias)
-    .compact()
-    .value();
+  for (const col of _.sortBy(collections, 'def.name')) {
+    const { id, name } = col.def;
+    const interfaceName = names.collection(name);
+    const alias = col.def.enum && enumIdAlias(col);
 
-  const collectionInterfaces = _.chain(collections)
-    .sortBy(col => col.def.name)
-    .forEach(col => {
-      const { id, name } = col.def;
-      const interfaceName = names.collection(name);
+    bases.push(baseInterface(col, { commentLineWidth }));
+    docs.push(docInterface(col));
+    cols.push(colInterface(col));
+    if (alias) enumIds.push(alias);
 
-      bases.push(baseInterface(col, { commentLineWidth }));
-      docs.push(docInterface(col));
-      cols.push(colInterface(col));
-
-      byNameEntries.push(`${name}: ${interfaceName};`);
-      byIdEntries.push(`${id}: ${interfaceName};`);
-    })
-    .value();
+    byNameEntries.push(`${name}: ${interfaceName};`);
+    byIdEntries.push(`${id}: ${interfaceName};`);
+  }
 
   const definitions = `
     /**
@@ -75,7 +64,7 @@ export function generateModule(
     ${cols.join('')}
     ${docs.join('')}
     ${bases.join('')}
-    ${enumCollectionIdAliases.join('')}
+    ${enumIds.join('')}
 
     /**
      * Union type of all current collection names
