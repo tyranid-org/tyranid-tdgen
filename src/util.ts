@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as _ from 'lodash';
+import { Tyr } from 'tyranid';
 
 export const { version } = JSON.parse(
   fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf-8')
@@ -13,13 +14,6 @@ export interface InterfaceGenerationOptions {
   header?: string;
   // length of comment lines
   commentLineWidth?: number;
-}
-
-/**
- * standard formatting for interface name
- */
-export function formatName(name: string) {
-  return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 /**

@@ -1,38 +1,12 @@
 import { Tyr } from 'tyranid';
 import * as _ from 'lodash';
-import { pad, formatName, wrappedUnionType } from './util';
-import {
-  DocumentInterfaceDeclaration,
-  generateDocumentInterface
-} from './document';
-
-/**
- * generated interface for tyranid collection type,
- * with metadata
- */
-export interface CollectionInterfaceDeclaration
-  extends DocumentInterfaceDeclaration {
-  id: string;
-  doc: DocumentInterfaceDeclaration;
-}
-
-export interface EnumCollectionIdTypeAlias {
-  col: Tyr.CollectionInstance;
-  declaration: string;
-  idTypeAlias: string;
-}
-
-export interface EnumIdAliasLookup {
-  [key: string]: EnumCollectionIdTypeAlias;
-}
+import * as names from './names';
+import { pad, wrappedUnionType } from './util';
 
 /**
  * produce union type alias for enum id values
  */
-export function generateEnumCollectionIdTypeAlias(opts: {
-  col: Tyr.CollectionInstance;
-}): EnumCollectionIdTypeAlias | void {
-  const { col } = opts;
+export function enumIdAlias(col: Tyr.CollectionInstance): string | void {
   if (!col.def.enum)
     throw new Error(
       `Non-enum collection passed to generateEnumCollectionIdTypeAlias`
@@ -46,47 +20,27 @@ export function generateEnumCollectionIdTypeAlias(opts: {
 
   if (!('_id' in values[0])) return;
 
-  const idTypeAlias = `${formatName(name)}Id`;
-
-  return {
-    col,
-    idTypeAlias,
-    declaration: `
+  return `
     /**
      * Type alias for enum id values in "${name}" collection
      */
-    export type ${idTypeAlias} =
+    export type ${names.id(name)} =
       ${wrappedUnionType(values, '_id', 3)};
-    `
-  };
+    `;
 }
 
 /**
  * generate interface for individual tyranid collection
  */
-export function generateCollectionInstanceInterface(opts: {
-  col: Tyr.CollectionInstance;
-  enumCollectionIdLookup: EnumIdAliasLookup;
-  commentLineWidth?: number;
-}): CollectionInterfaceDeclaration {
-  const { col, enumCollectionIdLookup, commentLineWidth } = opts;
-
+export function colInterface(col: Tyr.CollectionInstance) {
   const { name, id, fields } = col.def;
 
-  const interfaceName = `${formatName(name)}Collection`;
-  const doc = generateDocumentInterface({
-    col,
-    colInterfaceName: interfaceName,
-    enumCollectionIdLookup,
-    commentLineWidth
-  });
-
+  const interfaceName = names.collection(name);
   const properties: string[] = [];
-  const enummeration = col.def.enum;
 
   if (!fields) throw new Error(`Collection "${name}" has no fields!`);
 
-  if (enummeration) {
+  if (col.def.enum) {
     const rows = _.sortBy(col.def.values || [], 'name');
 
     if (rows.length && 'name' in fields) {
@@ -131,18 +85,12 @@ export function generateCollectionInstanceInterface(opts: {
 
   const props = properties.length ? properties.join('\n') + '\n' : '';
 
-  return {
-    name,
-    id,
-    doc,
-    interfaceName,
-    declaration: `
+  return `
     /**
      * Type definition for "${name}" collection
      */
-    export interface ${interfaceName} extends CollectionInstance<${doc.interfaceName}> {
+    export interface ${interfaceName} extends CollectionInstance<${names.document(name)}> {
       ${props}
     }
-    `
-  };
+    `;
 }

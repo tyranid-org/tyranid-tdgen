@@ -1,12 +1,18 @@
 import { Tyr } from 'tyranid';
 import * as _ from 'lodash';
 import { wrappedUnionType } from './util';
+import * as names from './names';
 import {
-  generateCollectionInstanceInterface,
-  generateEnumCollectionIdTypeAlias,
-  EnumCollectionIdTypeAlias,
-  EnumIdAliasLookup
+  colInterface,
+  enumIdAlias
 } from './collection';
+import {
+  docInterface
+} from './document';
+import {
+  baseInterface
+} from './base';
+
 
 export interface GenerateModuleOptions {
   client?: boolean;
@@ -30,44 +36,34 @@ export function generateModule(
 
   const byNameEntries: string[] = [];
   const byIdEntries: string[] = [];
-  const collectionInterfaceDeclarations: string[] = [];
-  const documentInterfaceDeclarations: string[] = [];
+  const cols: string[] = [];
+  const docs: string[] = [];
+  const bases: string[] = [];
 
   /**
    * get enum value type literal definitions for use in links
    */
-  const enumCollectionIdChain = _.chain(collections)
+  const enumCollectionIdAliases = _.chain(collections)
     .filter(col => col.def.enum)
-    .map(col => generateEnumCollectionIdTypeAlias({ col }))
-    .compact();
-
-  const enumCollectionIdLookup = enumCollectionIdChain
-    .reduce((out, alias: EnumCollectionIdTypeAlias) => {
-      out[alias.col.def.name] = alias;
-      return out;
-    }, <EnumIdAliasLookup>{})
+    .sortBy(col => col.def.name)
+    .map(enumIdAlias)
+    .compact()
     .value();
-
-  const enumCollectionIdAliases = enumCollectionIdChain.value();
 
   const collectionInterfaces = _.chain(collections)
     .sortBy(col => col.def.name)
-    .map(col =>
-      generateCollectionInstanceInterface({
-        col,
-        enumCollectionIdLookup,
-        commentLineWidth
-      })
-    )
-    .value();
+    .forEach(col => {
+      const { id, name } = col.def;
+      const interfaceName = names.collection(name);
 
-  for (const colInt of collectionInterfaces) {
-    const { name, id, doc, interfaceName, declaration } = colInt;
-    byNameEntries.push(`${name}: ${interfaceName};`);
-    byIdEntries.push(`${id}: ${interfaceName};`);
-    documentInterfaceDeclarations.push(doc.declaration);
-    collectionInterfaceDeclarations.push(declaration);
-  }
+      bases.push(baseInterface(col, { commentLineWidth }));
+      docs.push(docInterface(col));
+      cols.push(colInterface(col));
+
+      byNameEntries.push(`${name}: ${interfaceName};`);
+      byIdEntries.push(`${id}: ${interfaceName};`);
+    })
+    .value();
 
   const definitions = `
     /**
@@ -84,12 +80,10 @@ export function generateModule(
       ${byIdEntries.join('\n      ')}
     }
 
-    ${collectionInterfaceDeclarations.join('')}
-    ${documentInterfaceDeclarations.join('')}
-    ${enumCollectionIdAliases
-      .filter(a => !!a)
-      .map(a => a!.declaration)
-      .join('')}
+    ${cols.join('')}
+    ${docs.join('')}
+    ${bases.join('')}
+    ${enumCollectionIdAliases.join('')}
 
     /**
      * Union type of all current collection names

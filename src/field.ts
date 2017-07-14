@@ -1,6 +1,7 @@
-import { pad, formatName, wordWrap } from './util';
-import { EnumIdAliasLookup } from './collection';
 import { Tyr } from 'tyranid';
+import { pad, wordWrap } from './util';
+import * as names from './names';
+
 
 function assignableToString(fieldName: string) {
   switch (fieldName) {
@@ -45,7 +46,6 @@ export function addField(opts: {
   name: string;
   def: Tyr.FieldDefinition;
   indent: number;
-  enumCollectionIdLookup: EnumIdAliasLookup;
   parent?: string;
   colName?: string;
   siblingFields?: { [key: string]: any };
@@ -58,7 +58,6 @@ export function addField(opts: {
     indent = 0,
     parent,
     siblingFields,
-    enumCollectionIdLookup,
     colName,
     commentLineWidth,
     noPopulatedProperty = false
@@ -72,9 +71,7 @@ export function addField(opts: {
   if (def.def) def = def.def;
 
   // if the field is `_id` and the collection is an enum, use the type alias
-  if (name === '_id' && colName && colName in enumCollectionIdLookup) {
-    return enumCollectionIdLookup[colName].idTypeAlias;
-  }
+  if (name === '_id' && colName && def.enum) return names.id(colName);
 
   /**
    *
@@ -82,9 +79,12 @@ export function addField(opts: {
    *
    */
   if (def.link) {
+    const linkCol = Tyr.byName[def.link];
+    if (!linkCol) throw new Error(`No collection for link: ${def.link}`);
+
     const linkIdType =
-      def.link in enumCollectionIdLookup
-        ? enumCollectionIdLookup[def.link].idTypeAlias
+      (linkCol.def.enum)
+        ? names.id(linkCol.def.name)
         : 'ObjectID';
 
     // add populated prop too
@@ -99,7 +99,14 @@ export function addField(opts: {
         ? `${name}$`
         : deIded;
 
-    out += pad(`${replacementName}?: ${formatName(def.link)}`, indent - 1);
+    /**
+     * link type is intersection of base
+     * interface with Container generic
+     */
+    out += pad(
+      `${replacementName}?: Container & ${names.base(def.link)}<Container>`,
+      indent - 1
+    );
     return out;
   }
 
@@ -136,8 +143,7 @@ export function addField(opts: {
             name,
             def: def.of,
             indent,
-            parent: 'array',
-            enumCollectionIdLookup
+            parent: 'array'
           })
         : 'any'}[]`;
     }
@@ -158,7 +164,6 @@ export function addField(opts: {
           name: name + '_hash',
           def: def.of,
           indent: indent + 1,
-          enumCollectionIdLookup,
           noPopulatedProperty: true
         });
 
@@ -194,8 +199,7 @@ export function addField(opts: {
           name: sub,
           def: subFields[sub],
           indent: indent + 1,
-          siblingFields: subFields,
-          enumCollectionIdLookup
+          siblingFields: subFields
         });
         const fieldDef = `${subName}: ${subType};`;
         const comment =

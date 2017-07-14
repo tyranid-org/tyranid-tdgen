@@ -1,75 +1,20 @@
 import { Tyr } from 'tyranid';
-import { formatName, pad } from './util';
-import { addField, addComment } from './field';
-import { EnumIdAliasLookup } from './collection';
-
-/**
- * generated interface for tyranid document type,
- * with metadata
- */
-export interface DocumentInterfaceDeclaration {
-  interfaceName: string;
-  name: string;
-  declaration: string;
-}
+import * as names from './names';
 
 /**
  * generate interface for tyranid document type
  */
-export function generateDocumentInterface(opts: {
-  col: Tyr.CollectionInstance;
-  colInterfaceName: string;
-  enumCollectionIdLookup: EnumIdAliasLookup;
-  commentLineWidth?: number;
-}): DocumentInterfaceDeclaration {
-  const {
-    col,
-    colInterfaceName,
-    enumCollectionIdLookup,
-    commentLineWidth
-  } = opts;
+export function docInterface(col: Tyr.CollectionInstance): string {
   const { name, fields } = col.def;
-  const interfaceName = `${formatName(name)}`;
-  const properties: string[] = [];
+  const interfaceName = names.document(name);
+  const baseName = names.base(name);
 
-  if (!fields) throw new Error(`Collection "${name}" has no fields!`);
-
-  const fieldKeys = Object.keys(fields);
-  fieldKeys.sort();
-
-  for (const field of fieldKeys) {
-    const def = fields[field]['def'];
-    if (def) {
-      const required = field === '_id' || def.required;
-      const indent = 4;
-      const fieldName = field + (required ? '' : '?');
-      const fieldType = addField({
-        name: field,
-        def: def,
-        indent,
-        siblingFields: fields,
-        colName: name,
-        enumCollectionIdLookup,
-        commentLineWidth
-      });
-
-      properties.push(
-        addComment(def, indent - 1, commentLineWidth) +
-          `${fieldName}: ${fieldType};`
-      );
-    }
-  }
-
-  return {
-    name,
-    interfaceName,
-    declaration: `
+  return `
     /**
-     * Document returned by collection "${name}" <${colInterfaceName}>
+     * Document returned by collection "${name}" <${names.collection(col.def.name)}>
      */
-    export interface ${interfaceName} extends Tyr.Document {
-      ${properties.join('\n' + pad('', 3))}
+    export interface ${interfaceName} extends Tyr.Document, ${baseName}<Tyr.Document> {
+      _id: ObjectID
     }
-    `
-  };
+    `;
 }
