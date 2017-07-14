@@ -2,7 +2,6 @@ import { Tyr } from 'tyranid';
 import { pad, wordWrap } from './util';
 import * as names from './names';
 
-
 function assignableToString(fieldName: string) {
   switch (fieldName) {
     case 'string':
@@ -82,10 +81,9 @@ export function addField(opts: {
     const linkCol = Tyr.byName[def.link];
     if (!linkCol) throw new Error(`No collection for link: ${def.link}`);
 
-    const linkIdType =
-      (linkCol.def.enum)
-        ? names.id(linkCol.def.name)
-        : 'ObjectID';
+    const linkIdType = linkCol.def.enum
+      ? names.id(linkCol.def.name)
+      : 'ObjectID';
 
     // add populated prop too
     if (parent === 'array' || noPopulatedProperty) return linkIdType;

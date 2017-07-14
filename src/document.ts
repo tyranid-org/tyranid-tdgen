@@ -11,7 +11,9 @@ export function docInterface(col: Tyr.CollectionInstance): string {
 
   return `
     /**
-     * Document returned by collection "${name}" <${names.collection(col.def.name)}>
+     * Document returned by collection "${name}" <${names.collection(
+    col.def.name
+  )}>
      */
     export interface ${interfaceName} extends Tyr.Document, ${baseName}<Tyr.Document> {
       _id: ObjectID

@@ -89,7 +89,9 @@ export function colInterface(col: Tyr.CollectionInstance) {
     /**
      * Type definition for "${name}" collection
      */
-    export interface ${interfaceName} extends CollectionInstance<${names.document(name)}> {
+    export interface ${interfaceName} extends CollectionInstance<${names.document(
+    name
+  )}> {
       ${props}
     }
     `;

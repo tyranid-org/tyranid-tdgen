@@ -2,17 +2,9 @@ import { Tyr } from 'tyranid';
 import * as _ from 'lodash';
 import { wrappedUnionType } from './util';
 import * as names from './names';
-import {
-  colInterface,
-  enumIdAlias
-} from './collection';
-import {
-  docInterface
-} from './document';
-import {
-  baseInterface
-} from './base';
-
+import { colInterface, enumIdAlias } from './collection';
+import { docInterface } from './document';
+import { baseInterface } from './base';
 
 export interface GenerateModuleOptions {
   client?: boolean;

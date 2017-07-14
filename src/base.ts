@@ -6,12 +6,13 @@ import { addField, addComment } from './field';
 /**
  * generate base interface for tyranid document type
  */
-export function baseInterface(col: Tyr.CollectionInstance, opts: {
-  commentLineWidth?: number;
-}): string {
-  const {
-    commentLineWidth
-  } = opts;
+export function baseInterface(
+  col: Tyr.CollectionInstance,
+  opts: {
+    commentLineWidth?: number;
+  }
+): string {
+  const { commentLineWidth } = opts;
   const { name, fields } = col.def;
   const interfaceName = names.base(name);
   const properties: string[] = [];
