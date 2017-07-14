@@ -16,7 +16,7 @@ export interface CollectionInterfaceDeclaration extends DocumentInterfaceDeclara
 }
 
 export interface EnumCollectionIdTypeAlias {
-  col: Tyr.GenericCollection;
+  col: Tyr.CollectionInstance;
   declaration: string;
   idTypeAlias: string;
 }
@@ -29,7 +29,7 @@ export interface EnumIdAliasLookup {
  * produce union type alias for enum id values
  */
 export function generateEnumCollectionIdTypeAlias(opts: {
-  col: Tyr.GenericCollection;
+  col: Tyr.CollectionInstance;
 }): EnumCollectionIdTypeAlias | void {
   const { col } = opts;
   if (!col.def.enum)
@@ -64,7 +64,7 @@ export function generateEnumCollectionIdTypeAlias(opts: {
  * generate interface for individual tyranid collection
  */
 export function generateCollectionInstanceInterface(opts: {
-  col: Tyr.GenericCollection;
+  col: Tyr.CollectionInstance;
   enumCollectionIdLookup: EnumIdAliasLookup;
   commentLineWidth?: number;
 }): CollectionInterfaceDeclaration {

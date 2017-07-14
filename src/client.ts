@@ -14,7 +14,7 @@ import { generateDefinitionPreamble } from './preamble';
  *
  */
 export function generateClientDefinitionFile(
-  collections: Tyr.GenericCollection[],
+  collections: Tyr.CollectionInstance[],
   passedOptions: InterfaceGenerationOptions = {}
 ) {
   const td = `${generateDefinitionPreamble(passedOptions)}
@@ -25,13 +25,11 @@ declare module 'tyranid-client' {
 
     type ObjectID = string;
 
-    export const byName: CollectionsByName & { [key: string]: GenericCollection | void };
+    export const byName: CollectionsByName & { [key: string]: CollectionInstance | void };
 
-    export const byId: CollectionsById & { [key: string]: GenericCollection | void };
+    export const byId: CollectionsById & { [key: string]: CollectionInstance | void };
 
-    export interface GenericCollection extends CollectionInstance<Tyr.Document> {}
-
-    export interface CollectionInstance<T extends Tyr.Document> {
+    export interface CollectionInstance<T extends Tyr.Document = Tyr.Document> {
       findAll(args: any): Promise<T[]>;
       findOne(args: any): Promise<T>;
       idToUid(id: string): string;

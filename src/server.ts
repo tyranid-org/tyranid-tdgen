@@ -9,7 +9,7 @@ import { generateDefinitionPreamble } from './preamble';
  *
  */
 export function generateServerDefinitionFile(
-  collections: Tyr.GenericCollection[],
+  collections: Tyr.CollectionInstance[],
   passedOptions: InterfaceGenerationOptions = {}
 ) {
   const td = `${generateDefinitionPreamble(passedOptions)}

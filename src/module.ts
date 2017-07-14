@@ -23,7 +23,7 @@ export interface GenerateModuleOptions {
  *
  */
 export function generateModule(
-  collections: Tyr.GenericCollection[],
+  collections: Tyr.CollectionInstance[],
   opts: GenerateModuleOptions = {}
 ) {
   const { client, commentLineWidth } = opts;

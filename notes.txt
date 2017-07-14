@@ -1,0 +1,6 @@
+isomorphic:
+- interfaces (parametric on id type)
+- union types for collections/ids
+
+client / server
+- extend interfaces with id type

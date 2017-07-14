@@ -27,7 +27,7 @@ function resolveGenerationMethod(opts: DefinitionGenerationOptions = {}) {
  *
  */
 export function generateStream(
-  collections: Tyr.GenericCollection[],
+  collections: Tyr.CollectionInstance[],
   opts?: DefinitionGenerationOptions
 ) {
   const stream = new Readable();
@@ -44,7 +44,7 @@ export function generateStream(
  *
  */
 export function generateFileSync(
-  collections: Tyr.GenericCollection[],
+  collections: Tyr.CollectionInstance[],
   filename: string,
   opts?: DefinitionGenerationOptions
 ): string {
@@ -60,7 +60,7 @@ export function generateFileSync(
  *
  */
 export function generateFile(
-  collections: Tyr.GenericCollection[],
+  collections: Tyr.CollectionInstance[],
   filename: string,
   rawOpts?: DefinitionGenerationOptions | Function,
   cb?: Function

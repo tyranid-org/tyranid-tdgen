@@ -1,24 +1,12 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
-        "moduleResolution" : "node",
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "noImplicitThis": true,
-        "noUnusedLocals": true,
-        "noImplicitReturns": true,
-        "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true,
-        "removeComments": false,
-        "noLib": false,
-        "pretty": true,
-        "inlineSourceMap": true,
-        "forceConsistentCasingInFileNames": true,
-        "experimentalDecorators": true
-    },
-    "files": [
-        "index.ts",
-        "../../generated/test-stream-client.d.ts"
-    ]
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "moduleResolution" : "node",
+    "strict": true
+  },
+  "include": [
+    "index.ts",
+    "../../generated/test-stream-client.d.ts"
+  ]
 }

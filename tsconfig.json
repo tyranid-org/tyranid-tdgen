@@ -1,37 +1,30 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2015",
     "module": "commonjs",
     "moduleResolution" : "node",
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noImplicitReturns": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
+    "strict": true,
     "removeComments": false,
     "pretty": true,
     "outDir": "./dist/",
     "inlineSourceMap": true,
-    "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true,
     "lib": [
-      "es6"
+      "es2015"
     ],
     "types": [
-      "commander",
+      "mongodb",
       "lodash",
-      "node"
+      "tyranid",
+      "commander"
     ]
   },
   "include": [
-    "./src/cli.ts",
-    "./src/index.ts",
-    "./test/index.ts",
-    "./test/models/*.ts"
+    "src",
+    "test"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "test/compile-test",
+    "test/compile-client"
   ]
 }

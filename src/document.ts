@@ -17,7 +17,7 @@ export interface DocumentInterfaceDeclaration {
  * generate interface for tyranid document type
  */
 export function generateDocumentInterface(opts: {
-  col: Tyr.GenericCollection;
+  col: Tyr.CollectionInstance;
   colInterfaceName: string;
   enumCollectionIdLookup: EnumIdAliasLookup;
   commentLineWidth?: number;

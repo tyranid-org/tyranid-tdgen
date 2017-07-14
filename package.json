@@ -11,14 +11,14 @@
     "build": "rm -rf ./dist/ && npm run tsc",
     "pretest": "npm run build",
     "prepublish": "npm run test",
-    "ava": "./node_modules/.bin/nyc ./node_modules/.bin/ava",
+    "ava": "mkdir -p generated && nyc ava",
     "test": "npm run ava && npm run compile-test",
-    "compile-test": "mkdir -p ./generated && ./node_modules/.bin/tsc -p ./test/compile-test/ && ./node_modules/.bin/tsc -p ./test/compile-client/",
-    "tsc": "./node_modules/typescript/bin/tsc -d --pretty",
-    "coverage": "./node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov && ./node_modules/.bin/codecov",
+    "compile-test": "tsc -p ./test/compile-test/ && tsc -p ./test/compile-client/",
+    "tsc": "tsc -d --pretty",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "docs": "typedoc --options typedoc.json src",
     "gh-pages": "npm run docs && gh-pages -d docs",
-    "prettier": "./node_modules/.bin/prettier --single-quote --write ./src/**/*.ts ./test/**/*.ts",
+    "prettier": "prettier --single-quote --write ./{src,test}/**/*.ts",
     "precommit": "npm run prettier && npm test"
   },
   "engines": {
@@ -27,18 +27,20 @@
   "author": "bsouthga@gmail.com",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@types/mongodb": "2.2.7",
     "ava": "0.16.0",
     "codecov": "1.0.1",
-    "gh-pages": "^0.12.0",
-    "husky": "^0.13.4",
+    "gh-pages": "1.0.0",
+    "husky": "0.14.3",
+    "mongodb": "2.2.30",
     "nyc": "8.3.0",
-    "prettier": "^1.4.4",
-    "typedoc": "^0.7.1",
-    "typescript": "2.3.4",
-    "tyranid": "0.1.57"
+    "prettier": "1.5.2",
+    "typedoc": "0.7.1",
+    "typescript": "2.4.1",
+    "tyranid": "0.1.63"
   },
   "peerDependencies": {
-    "tyranid": "^0.1.57"
+    "tyranid": "^0.1.63"
   },
   "ava": {
     "files": [
