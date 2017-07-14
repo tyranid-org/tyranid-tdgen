@@ -47,6 +47,11 @@ export function generateModule(
   }
 
   const definitions = `
+    ${cols.join('')}
+    ${docs.join('')}
+    ${bases.join('')}
+    ${enumIds.join('')}
+
     /**
      * Add lookup properties to Tyr.byName with extended interfaces
      */
@@ -60,11 +65,6 @@ export function generateModule(
     ${client ? 'export ' : ''}interface CollectionsById {
       ${byIdEntries.join('\n      ')}
     }
-
-    ${cols.join('')}
-    ${docs.join('')}
-    ${bases.join('')}
-    ${enumIds.join('')}
 
     /**
      * Union type of all current collection names
