@@ -47,9 +47,9 @@ export function generateModule(
   }
 
   const definitions = `
-    ${cols.join('')}
-    ${docs.join('')}
     ${bases.join('')}
+    ${docs.join('')}
+    ${cols.join('')}
     ${enumIds.join('')}
 
     /**
