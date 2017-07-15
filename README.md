@@ -13,7 +13,7 @@ Pass your model directory to `tyranid-tdgen`
 
 ```bash
 npm install -g tyranid-tdgen
-tyranid-tdgen ./models/ > generated.dts
+tyranid-tdgen ./models/ > generated.d.ts
 ```
 
 For help...
@@ -24,10 +24,12 @@ tyranid-tdgen --help
 
 ### Example Usage - Module
 
-Say we have a user tyranid document, `User.ts`...
+(see `/example` for the code and output shown below)
 
-```javascript
-import Tyr from 'tyranid';
+Say we have a user tyranid collection, `User.ts`...
+
+```typescript
+import { Tyr } from 'tyranid';
 
 export default new Tyr.Collection({
   id: 'u00',
@@ -37,7 +39,7 @@ export default new Tyr.Collection({
     _id: { is: 'mongoid' },
     name: { is: 'string' },
     email: { is: 'email' },
-    teamId: { link: 'team' },
+    teamId: { is: 'mongoid' },
     skills: {
       is: 'array',
       of: {
@@ -49,81 +51,54 @@ export default new Tyr.Collection({
       }
     }
   }
-})
+});
 ```
 
 In a separate typescript/javascript file, after initializing tyranid, we can generate a type definition file like so...
 
 ```javascript
-import Tyr from 'tyranid';
+import { Tyr } from 'tyranid';
+import * as fs from 'fs';
 import * as mongodb from 'mongodb';
-import { generateStream } from 'tyranid-tdgen';
+import * as path from 'path';
+import { generateFile } from '../';
 
-async function start() {
-  const db = await mongodb
-    .MongoClient
-    .connect('mongodb://127.0.0.1:27017/tyranid_tdgen');
+generate().catch(console.error);
+
+async function generate() {
+  const db = await mongodb.MongoClient.connect(
+    'mongodb://127.0.0.1:27017/tyranid_tdgen'
+  );
 
   Tyr.config({
     db: db,
     validate: [
-      { dir: __dirname + `/models/`,
-        fileMatch: '.*.js' }
+      {
+        dir: path.resolve(__dirname, `./models/`),
+        fileMatch: '.*.ts'
+      }
     ]
   });
 
-  generateStream(Tyr.collections)
-    .pipe(fs.createWriteStream("./my-tyranid-stuff.d.ts"));
+  await Promise.all([
+    generateFile(
+      Tyr.collections,
+      path.resolve(__dirname, './output/isomorphic.d.ts')
+    ),
+    generateFile(
+      Tyr.collections,
+      path.resolve(__dirname, './output/server.d.ts'),
+      { type: 'server' }
+    ),
+    generateFile(
+      Tyr.collections,
+      path.resolve(__dirname, './output/client.d.ts'),
+      { type: 'client' }
+    )
+  ]);
+
+  process.exit(0);
 }
 ```
 
-
-Then, in `./my-tyranid-stuff.d.ts`, the following will have been generated...
-
-
-```typescript
-import { ObjectID } from 'mongodb';
-
-declare module 'tyranid' {
-
-  namespace Tyr {
-
-    /**
-     * Add lookup properties to Tyr.byName with extended interfaces
-     */
-    interface TyranidCollectionsByName {
-      // other defs...
-      user: UserCollectionInstance;
-    }
-
-
-    /**
-     * Type definition for "user" collection
-     */
-    interface UserCollectionInstance extends CollectionInstance {
-      new (...args: any[]): UserDocument;
-      fromClient(...args: any[]): UserDocument;
-      findAndModify(...args: any[]): Promise<UserDocument>;
-      findOne(...args: any[]): Promise<UserDocument>;
-      findAll(...args: any[]): Promise<UserDocument[]>;
-    }
-
-
-    /**
-     * Document returned by collection "user" <UserCollectionInstance>
-     */
-    interface UserDocument extends Document {
-      _id: ObjectID;
-      name: string;
-      email: string;
-      teamId: ObjectID,
-      skills: {
-        years: number
-        name: string
-      }[];
-    }
-
-  }
-
-}
-```
+See `./example/output` for the resulting generated type definition files.

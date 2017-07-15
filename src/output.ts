@@ -39,7 +39,7 @@ function resolveGenerationMethod(type: CodeType) {
  */
 export function generateStream(
   collections: Tyr.CollectionInstance[],
-  opts: DefinitionGenerationOptions = { type: 'server' }
+  opts: DefinitionGenerationOptions = { type: 'isomorphic' }
 ) {
   const stream = new Readable();
   const td = resolveGenerationMethod(opts.type)(collections, opts);
@@ -57,7 +57,7 @@ export function generateStream(
 export function generateFileSync(
   collections: Tyr.CollectionInstance[],
   filename: string,
-  opts: DefinitionGenerationOptions = { type: 'server' }
+  opts: DefinitionGenerationOptions = { type: 'isomorphic' }
 ): string {
   const td = resolveGenerationMethod(opts.type)(collections, opts);
   fs.writeFileSync(filename, td);
@@ -73,7 +73,7 @@ export function generateFileSync(
 export function generateFile(
   collections: Tyr.CollectionInstance[],
   filename: string,
-  opts: DefinitionGenerationOptions = { type: 'server' }
+  opts: DefinitionGenerationOptions = { type: 'isomorphic' }
 ): Promise<string> {
   return new Promise((res, rej) => {
     const td = resolveGenerationMethod(opts.type)(collections, opts);

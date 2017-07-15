@@ -18,7 +18,7 @@
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "docs": "typedoc --options typedoc.json src",
     "gh-pages": "npm run docs && gh-pages -d docs",
-    "prettier": "prettier --single-quote --write ./{src,test}/**/*.ts",
+    "prettier": "prettier --single-quote --write ./{src,test}/**/*.ts ./{src,test,example}/*.ts",
     "precommit": "npm run prettier && npm test"
   },
   "engines": {
@@ -35,6 +35,7 @@
     "mongodb": "2.2.30",
     "nyc": "8.3.0",
     "prettier": "1.5.2",
+    "ts-node": "^3.2.0",
     "typedoc": "0.7.1",
     "typescript": "2.4.1",
     "tyranid": "0.2.0"
