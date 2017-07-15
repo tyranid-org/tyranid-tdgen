@@ -133,7 +133,7 @@ export function addField(opts: {
    * link types
    *
    */
-  if (def.link) {
+  if (typeof def.link === 'string') {
     const linkCol = Tyr.byName[def.link];
     if (!linkCol) throw new Error(`No collection for link: ${def.link}`);
 
