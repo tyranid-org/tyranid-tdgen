@@ -1,13 +1,10 @@
 import { Tyr } from 'tyranid';
-import { InterfaceGenerationOptions } from './util';
-import { generateModule } from './module';
+import * as _ from 'lodash';
+import * as names from './names';
+import { InterfaceGenerationOptions, pad } from './util';
 import { generateDefinitionPreamble } from './preamble';
+import { generateCollectionLookups, generateCommonTypes } from './isomorphic';
 
-/**
- *
- * TODO: base interfaces should be moved to tyranid repo
- *
- */
 /**
  *
  * Generate tyranid definition file for client usage
@@ -20,31 +17,29 @@ export function generateClientDefinitionFile(
   const td = `${generateDefinitionPreamble(passedOptions)}
 
 declare module 'tyranid-client' {
+  import { Tyr as ${names.isomorphic()} } from 'tyranid-isomorphic';
 
   export namespace Tyr {
 
-    type ObjectID = string;
-
     export const byName: CollectionsByName & { [key: string]: CollectionInstance | void };
-
     export const byId: CollectionsById & { [key: string]: CollectionInstance | void };
+    export type CollectionName = ${names.isomorphic('CollectionName')};
+    export type CollectionId = ${names.isomorphic('CollectionId')};
 
-    export interface CollectionInstance<T extends Tyr.Document = Tyr.Document> {
+    export interface CollectionInstance<T extends Document = Document> {
       findAll(args: any): Promise<T[]>;
       findOne(args: any): Promise<T>;
       idToUid(id: string): string;
     }
 
     export interface Document {
-      $model: Tyr.CollectionInstance<this>;
+      $model: CollectionInstance<this>;
       $uid: string;
       $id: string;
     }
 
-${generateModule(collections, {
-    client: true,
-    commentLineWidth: passedOptions.commentLineWidth
-  })}
+    ${generateCommonTypes(collections)}
+    ${generateCollectionLookups(collections, true)}
   }
 
 }

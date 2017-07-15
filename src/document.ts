@@ -4,19 +4,21 @@ import * as names from './names';
 /**
  * generate interface for tyranid document type
  */
-export function docInterface(col: Tyr.CollectionInstance): string {
+export function docInterface(
+  col: Tyr.CollectionInstance,
+  opts: { superInterface?: string; idType?: string } = {}
+): string {
   const { name, fields } = col.def;
+  const { superInterface = 'Document', idType = 'string' } = opts;
   const interfaceName = names.document(name);
   const baseName = names.base(name);
+  const colName = names.collection(name);
 
   return `
     /**
-     * Document returned by collection "${name}" <${names.collection(
-    col.def.name
-  )}>
+     * Document returned by collection "${name}" <${colName}>
      */
-    export interface ${interfaceName} extends Tyr.Document, ${baseName}<Tyr.Document> {
-      _id: ObjectID
-    }
+    export interface ${interfaceName}<IdType = ${idType}>
+      extends ${superInterface}<IdType>, ${baseName}<IdType, ${superInterface}<IdType>> { _id: IdType }
     `;
 }

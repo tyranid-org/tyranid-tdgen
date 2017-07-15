@@ -14,6 +14,8 @@ export interface InterfaceGenerationOptions {
   header?: string;
   // length of comment lines
   commentLineWidth?: number;
+  // generate base interfaces?
+  isomorphic?: boolean;
 }
 
 /**

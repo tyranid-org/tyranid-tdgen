@@ -4,6 +4,9 @@ import { Readable } from 'stream';
 import { InterfaceGenerationOptions } from './util';
 import { generateServerDefinitionFile } from './server';
 import { generateClientDefinitionFile } from './client';
+import { generateIsomorphicDefinitionFile } from './isomorphic';
+
+export type CodeType = 'client' | 'server' | 'isomorphic';
 
 export interface DefinitionGenerationOptions
   extends InterfaceGenerationOptions {
@@ -12,13 +15,20 @@ export interface DefinitionGenerationOptions
    * generate client side definitions instead of server
    *
    */
-  client?: boolean;
+  type: CodeType;
 }
 
-function resolveGenerationMethod(opts: DefinitionGenerationOptions = {}) {
-  return opts.client
-    ? generateClientDefinitionFile
-    : generateServerDefinitionFile;
+function resolveGenerationMethod(type: CodeType) {
+  switch (type) {
+    case 'client':
+      return generateClientDefinitionFile;
+    case 'isomorphic':
+      return generateIsomorphicDefinitionFile;
+    case 'server':
+      return generateServerDefinitionFile;
+    default:
+      throw new Error(`Invalid generation type = ${type}`);
+  }
 }
 
 /**
@@ -29,10 +39,10 @@ function resolveGenerationMethod(opts: DefinitionGenerationOptions = {}) {
  */
 export function generateStream(
   collections: Tyr.CollectionInstance[],
-  opts?: DefinitionGenerationOptions
+  opts: DefinitionGenerationOptions = { type: 'server' }
 ) {
   const stream = new Readable();
-  const td = resolveGenerationMethod(opts)(collections, opts);
+  const td = resolveGenerationMethod(opts.type)(collections, opts);
   stream.push(td);
   stream.push(null);
   return stream;
@@ -47,9 +57,9 @@ export function generateStream(
 export function generateFileSync(
   collections: Tyr.CollectionInstance[],
   filename: string,
-  opts?: DefinitionGenerationOptions
+  opts: DefinitionGenerationOptions = { type: 'server' }
 ): string {
-  const td = resolveGenerationMethod(opts)(collections, opts);
+  const td = resolveGenerationMethod(opts.type)(collections, opts);
   fs.writeFileSync(filename, td);
   return td;
 }
@@ -63,28 +73,13 @@ export function generateFileSync(
 export function generateFile(
   collections: Tyr.CollectionInstance[],
   filename: string,
-  rawOpts?: DefinitionGenerationOptions | Function,
-  cb?: Function
+  opts: DefinitionGenerationOptions = { type: 'server' }
 ): Promise<string> {
-  let opts: DefinitionGenerationOptions;
-  if (rawOpts instanceof Function) {
-    cb = rawOpts;
-    opts = {};
-  } else {
-    opts = rawOpts || {};
-  }
-
   return new Promise((res, rej) => {
-    try {
-      const td = resolveGenerationMethod(opts)(collections, opts);
-      fs.writeFile(filename, td, err => {
-        if (err) rej(err);
-        if (cb) cb(err, td);
-        res(td);
-      });
-    } catch (err) {
-      if (cb) cb(err);
-      rej(err);
-    }
+    const td = resolveGenerationMethod(opts.type)(collections, opts);
+    fs.writeFile(filename, td, err => {
+      if (err) rej(err);
+      res(td);
+    });
   });
 }

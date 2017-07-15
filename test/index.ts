@@ -23,34 +23,21 @@ test.before(async () => {
 });
 
 test('Should successfully write file', () => {
-  generateFileSync(Tyr.collections, path.join(root, '../generated/test.d.ts'));
+  generateFileSync(Tyr.collections, path.join(root, '../generated/isomorphic.d.ts'), { type: 'isomorphic' });
 });
 
 test('Should successfully write file async', t => {
   return generateFile(
     Tyr.collections,
-    path.join(root, '../generated/test-async.d.ts'),
-    () => {
-      t.pass();
-    }
-  ).then(() => {}); // void promise for ava
-});
-
-test('Should successfully write stream', t => {
-  generateStream(Tyr.collections)
-    .pipe(
-      fs.createWriteStream(path.join(root, '../generated/test-stream.d.ts'))
-    )
-    .on('end', () => {
-      t.pass();
-    });
+    path.join(root, '../generated/server.d.ts')
+  ).then(() => { t.pass() }); // void promise for ava
 });
 
 test('Should generate client-side definitions', t => {
-  generateStream(Tyr.collections, { client: true })
+  generateStream(Tyr.collections, { type: 'client' })
     .pipe(
       fs.createWriteStream(
-        path.join(root, '../generated/test-stream-client.d.ts')
+        path.join(root, '../generated/client.d.ts')
       )
     )
     .on('end', () => {
