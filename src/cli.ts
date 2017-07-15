@@ -27,6 +27,7 @@ program
     `mongodb database name to use, defaults to ${DEFAULT_DBNAME}`
   )
   .option('-h, --mongodb-host', `mongodb host, defaults to ${DEFAULT_HOST}`)
+  .option('-t, --type [outputType]', 'type of definitions to output (client|server|isomorphic)')
   .action(glob => {
     fileGlob = glob;
   })
@@ -48,7 +49,7 @@ program
 
   Tyr.config({ db: db, validate: [{ glob: globToUse }] });
 
-  const stream = generateStream(Tyr.collections);
+  const stream = generateStream(Tyr.collections, { type: program.type || 'isomorphic' });
 
   if (program['outFile']) {
     stream.pipe(fs.createWriteStream(program['outFile'])).on('finish', () => {
