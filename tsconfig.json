@@ -20,7 +20,8 @@
   },
   "include": [
     "src",
-    "test"
+    "test",
+    "example/models"
   ],
   "exclude": [
     "node_modules",

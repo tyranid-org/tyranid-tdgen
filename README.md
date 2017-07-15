@@ -13,7 +13,7 @@ Pass your model directory to `tyranid-tdgen`
 
 ```bash
 npm install -g tyranid-tdgen
-tyranid-tdgen ./models/ > generated.d.ts
+tyranid-tdgen "./dist/example/models/*.js" > isomorphic.d.ts
 ```
 
 For help...
