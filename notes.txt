@@ -1,9 +1,0 @@
-isomorphic:
-- interfaces (parametric on id type)
-- union types for collections/ids
-- documents
-
-client / server
-- extend interfaces with id type
-
-
