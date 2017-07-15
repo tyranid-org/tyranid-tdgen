@@ -38,10 +38,10 @@
     "ts-node": "^3.2.0",
     "typedoc": "0.7.1",
     "typescript": "2.4.1",
-    "tyranid": "0.2.0"
+    "tyranid": "^0.2.1"
   },
   "peerDependencies": {
-    "tyranid": "^0.2.0"
+    "tyranid": "^0.2.1"
   },
   "ava": {
     "files": [
