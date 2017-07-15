@@ -72,105 +72,83 @@
 				<h3 id="example-usage-command-line">Example Usage - Command Line</h3>
 				<p>Pass your model directory to <code>tyranid-tdgen</code></p>
 				<pre><code class="lang-bash">npm install -g tyranid-tdgen
-tyranid-tdgen ./models/ &gt; generated.dts
+tyranid-tdgen <span class="hljs-string">"./dist/example/models/*.js"</span> &gt; isomorphic.d.ts
 </code></pre>
 				<p>For help...</p>
 				<pre><code class="lang-bash">tyranid-tdgen --help
 </code></pre>
 				<h3 id="example-usage-module">Example Usage - Module</h3>
-				<p>Say we have a user tyranid document, <code>User.ts</code>...</p>
-				<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> Tyr <span class="hljs-keyword">from</span> <span class="hljs-string">'tyranid'</span>;
+				<p>(see <code>/example</code> for the code and output shown below)</p>
+				<p>Say we have a user tyranid collection, <code>User.ts</code>...</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { Tyr } from <span class="hljs-string">'tyranid'</span>;
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">new</span> Tyr.Collection({
-  <span class="hljs-attr">id</span>: <span class="hljs-string">'u00'</span>,
-  <span class="hljs-attr">name</span>: <span class="hljs-string">'user'</span>,
-  <span class="hljs-attr">dbName</span>: <span class="hljs-string">'users'</span>,
-  <span class="hljs-attr">fields</span>: {
-    <span class="hljs-attr">_id</span>: { <span class="hljs-attr">is</span>: <span class="hljs-string">'mongoid'</span> },
-    <span class="hljs-attr">name</span>: { <span class="hljs-attr">is</span>: <span class="hljs-string">'string'</span> },
-    <span class="hljs-attr">email</span>: { <span class="hljs-attr">is</span>: <span class="hljs-string">'email'</span> },
-    <span class="hljs-attr">teamId</span>: { <span class="hljs-attr">link</span>: <span class="hljs-string">'team'</span> },
-    <span class="hljs-attr">skills</span>: {
-      <span class="hljs-attr">is</span>: <span class="hljs-string">'array'</span>,
-      <span class="hljs-attr">of</span>: {
-        <span class="hljs-attr">is</span>: <span class="hljs-string">'object'</span>,
-        <span class="hljs-attr">fields</span>: {
-          <span class="hljs-attr">years</span>: { <span class="hljs-attr">is</span>: <span class="hljs-string">'integer'</span> },
-          <span class="hljs-attr">name</span>: { <span class="hljs-attr">is</span>: <span class="hljs-string">'string'</span> }
+  id: <span class="hljs-string">'u00'</span>,
+  name: <span class="hljs-string">'user'</span>,
+  dbName: <span class="hljs-string">'users'</span>,
+  fields: {
+    _id: { is: <span class="hljs-string">'mongoid'</span> },
+    name: { is: <span class="hljs-string">'string'</span> },
+    email: { is: <span class="hljs-string">'email'</span> },
+    teamId: { is: <span class="hljs-string">'mongoid'</span> },
+    skills: {
+      is: <span class="hljs-string">'array'</span>,
+      of: {
+        is: <span class="hljs-string">'object'</span>,
+        fields: {
+          years: { is: <span class="hljs-string">'integer'</span> },
+          name: { is: <span class="hljs-string">'string'</span> }
         }
       }
     }
   }
-})
+});
 </code></pre>
 				<p>In a separate typescript/javascript file, after initializing tyranid, we can generate a type definition file like so...</p>
-				<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> Tyr <span class="hljs-keyword">from</span> <span class="hljs-string">'tyranid'</span>;
+				<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { Tyr } <span class="hljs-keyword">from</span> <span class="hljs-string">'tyranid'</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> fs <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>;
 <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> mongodb <span class="hljs-keyword">from</span> <span class="hljs-string">'mongodb'</span>;
-<span class="hljs-keyword">import</span> { generateStream } <span class="hljs-keyword">from</span> <span class="hljs-string">'tyranid-tdgen'</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span>;
+<span class="hljs-keyword">import</span> { generateFile } <span class="hljs-keyword">from</span> <span class="hljs-string">'../'</span>;
 
-<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">start</span>(<span class="hljs-params"></span>) </span>{
-  <span class="hljs-keyword">const</span> db = <span class="hljs-keyword">await</span> mongodb
-    .MongoClient
-    .connect(<span class="hljs-string">'mongodb://127.0.0.1:27017/tyranid_tdgen'</span>);
+generate().catch(<span class="hljs-built_in">console</span>.error);
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">generate</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> db = <span class="hljs-keyword">await</span> mongodb.MongoClient.connect(
+    <span class="hljs-string">'mongodb://127.0.0.1:27017/tyranid_tdgen'</span>
+  );
 
   Tyr.config({
     <span class="hljs-attr">db</span>: db,
     <span class="hljs-attr">validate</span>: [
-      { <span class="hljs-attr">dir</span>: __dirname + <span class="hljs-string">`/models/`</span>,
-        <span class="hljs-attr">fileMatch</span>: <span class="hljs-string">'.*.js'</span> }
+      {
+        <span class="hljs-attr">dir</span>: path.resolve(__dirname, <span class="hljs-string">`./models/`</span>),
+        <span class="hljs-attr">fileMatch</span>: <span class="hljs-string">'.*.ts'</span>
+      }
     ]
   });
 
-  generateStream(Tyr.collections)
-    .pipe(fs.createWriteStream(<span class="hljs-string">"./my-tyranid-stuff.d.ts"</span>));
+  <span class="hljs-keyword">await</span> <span class="hljs-built_in">Promise</span>.all([
+    generateFile(
+      Tyr.collections,
+      path.resolve(__dirname, <span class="hljs-string">'./output/isomorphic.d.ts'</span>)
+    ),
+    generateFile(
+      Tyr.collections,
+      path.resolve(__dirname, <span class="hljs-string">'./output/server.d.ts'</span>),
+      { <span class="hljs-attr">type</span>: <span class="hljs-string">'server'</span> }
+    ),
+    generateFile(
+      Tyr.collections,
+      path.resolve(__dirname, <span class="hljs-string">'./output/client.d.ts'</span>),
+      { <span class="hljs-attr">type</span>: <span class="hljs-string">'client'</span> }
+    )
+  ]);
+
+  process.exit(<span class="hljs-number">0</span>);
 }
 </code></pre>
-				<p>Then, in <code>./my-tyranid-stuff.d.ts</code>, the following will have been generated...</p>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { ObjectID } from <span class="hljs-string">'mongodb'</span>;
-
-<span class="hljs-keyword">declare</span> <span class="hljs-keyword">module</span> 'tyranid' {
-
-  <span class="hljs-keyword">namespace</span> Tyr {
-
-    <span class="hljs-comment">/**
-     * Add lookup properties to Tyr.byName with extended interfaces
-     */</span>
-    <span class="hljs-keyword">interface</span> TyranidCollectionsByName {
-      <span class="hljs-comment">// other defs...</span>
-      user: UserCollectionInstance;
-    }
-
-
-    <span class="hljs-comment">/**
-     * Type definition for "user" collection
-     */</span>
-    <span class="hljs-keyword">interface</span> UserCollectionInstance <span class="hljs-keyword">extends</span> CollectionInstance {
-      <span class="hljs-keyword">new</span> (...args: <span class="hljs-built_in">any</span>[]): UserDocument;
-      fromClient(...args: <span class="hljs-built_in">any</span>[]): UserDocument;
-      findAndModify(...args: <span class="hljs-built_in">any</span>[]): Promise&lt;UserDocument&gt;;
-      findOne(...args: <span class="hljs-built_in">any</span>[]): Promise&lt;UserDocument&gt;;
-      findAll(...args: <span class="hljs-built_in">any</span>[]): Promise&lt;UserDocument[]&gt;;
-    }
-
-
-    <span class="hljs-comment">/**
-     * Document returned by collection "user" &lt;UserCollectionInstance&gt;
-     */</span>
-    <span class="hljs-keyword">interface</span> UserDocument <span class="hljs-keyword">extends</span> Document {
-      _id: ObjectID;
-      name: <span class="hljs-built_in">string</span>;
-      email: <span class="hljs-built_in">string</span>;
-      teamId: ObjectID,
-      skills: {
-        years: <span class="hljs-built_in">number</span>
-        name: <span class="hljs-built_in">string</span>
-      }[];
-    }
-
-  }
-
-}
-</code></pre>
+				<p>See <code>./example/output</code> for the resulting generated type definition files.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -183,109 +161,133 @@ tyranid-tdgen ./models/ &gt; generated.dts
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-is-external">
-						<a href="interfaces/collectioninterfacedeclaration.html" class="tsd-kind-icon">Collection<wbr>Interface<wbr>Declaration</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-is-external">
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/definitiongenerationoptions.html" class="tsd-kind-icon">Definition<wbr>Generation<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-is-external">
-						<a href="interfaces/documentinterfacedeclaration.html" class="tsd-kind-icon">Document<wbr>Interface<wbr>Declaration</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-is-external">
-						<a href="interfaces/enumcollectionidtypealias.html" class="tsd-kind-icon">Enum<wbr>Collection<wbr>IdType<wbr>Alias</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-is-external">
-						<a href="interfaces/enumidaliaslookup.html" class="tsd-kind-icon">Enum<wbr>IdAlias<wbr>Lookup</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-is-external">
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/generatemoduleoptions.html" class="tsd-kind-icon">Generate<wbr>Module<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-is-external">
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/interfacegenerationoptions.html" class="tsd-kind-icon">Interface<wbr>Generation<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#codetype" class="tsd-kind-icon">Code<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#cwd" class="tsd-kind-icon">CWD</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#default_dbname" class="tsd-kind-icon">DEFAULT_<wbr>DBNAME</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#default_host" class="tsd-kind-icon">DEFAULT_<wbr>HOST</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#root" class="tsd-kind-icon">ROOT</a>
 					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#spreadsheettemplatemappingtype" class="tsd-kind-icon">Spreadsheet<wbr>Template<wbr>Mapping<wbr>Type</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#tyr" class="tsd-kind-icon">Tyr</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#config" class="tsd-kind-icon">config</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-is-private tsd-is-not-exported">
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#document" class="tsd-kind-icon">document</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#fileglob" class="tsd-kind-icon">file<wbr>Glob</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-is-external">
+					<li class=" tsd-kind-variable">
 						<a href="globals.html#version" class="tsd-kind-icon">version</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
 						<a href="globals.html#addcomment" class="tsd-kind-icon">add<wbr>Comment</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
 						<a href="globals.html#addfield" class="tsd-kind-icon">add<wbr>Field</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external tsd-is-not-exported">
+					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#assignabletostring" class="tsd-kind-icon">assignable<wbr>ToString</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
-						<a href="globals.html#formatname" class="tsd-kind-icon">format<wbr>Name</a>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#base" class="tsd-kind-icon">base</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
+						<a href="globals.html#baseinterface" class="tsd-kind-icon">base<wbr>Interface</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#colinterface" class="tsd-kind-icon">col<wbr>Interface</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#collection" class="tsd-kind-icon">collection</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#docinterface" class="tsd-kind-icon">doc<wbr>Interface</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#enumidalias" class="tsd-kind-icon">enum<wbr>IdAlias</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#enumstatic" class="tsd-kind-icon">enum<wbr>Static</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#enumstaticinterface" class="tsd-kind-icon">enum<wbr>Static<wbr>Interface</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#format" class="tsd-kind-icon">format</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#generateclientdefinitionfile" class="tsd-kind-icon">generate<wbr>Client<wbr>Definition<wbr>File</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
-						<a href="globals.html#generatecollectioninstanceinterface" class="tsd-kind-icon">generate<wbr>Collection<wbr>Instance<wbr>Interface</a>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#generatecollectionlookups" class="tsd-kind-icon">generate<wbr>Collection<wbr>Lookups</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
+						<a href="globals.html#generatecommontypes" class="tsd-kind-icon">generate<wbr>Common<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#generatedefinitionpreamble" class="tsd-kind-icon">generate<wbr>Definition<wbr>Preamble</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
-						<a href="globals.html#generatedocumentinterface" class="tsd-kind-icon">generate<wbr>Document<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-function tsd-is-external">
-						<a href="globals.html#generateenumcollectionidtypealias" class="tsd-kind-icon">generate<wbr>Enum<wbr>Collection<wbr>IdType<wbr>Alias</a>
-					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
 						<a href="globals.html#generatefile" class="tsd-kind-icon">generate<wbr>File</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
 						<a href="globals.html#generatefilesync" class="tsd-kind-icon">generate<wbr>File<wbr>Sync</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
-						<a href="globals.html#generatemodule" class="tsd-kind-icon">generate<wbr>Module</a>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#generateisomorphicdefinitionfile" class="tsd-kind-icon">generate<wbr>Isomorphic<wbr>Definition<wbr>File</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
+						<a href="globals.html#generateisomorphicinterfaces" class="tsd-kind-icon">generate<wbr>Isomorphic<wbr>Interfaces</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#generateserverdefinitionfile" class="tsd-kind-icon">generate<wbr>Server<wbr>Definition<wbr>File</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
 						<a href="globals.html#generatestream" class="tsd-kind-icon">generate<wbr>Stream</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
+						<a href="globals.html#id" class="tsd-kind-icon">id</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isomorphic" class="tsd-kind-icon">isomorphic</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#pad" class="tsd-kind-icon">pad</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external tsd-is-not-exported">
+					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#resolvegenerationmethod" class="tsd-kind-icon">resolve<wbr>Generation<wbr>Method</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
 						<a href="globals.html#uniontype" class="tsd-kind-icon">union<wbr>Type</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
 						<a href="globals.html#wordwrap" class="tsd-kind-icon">word<wbr>Wrap</a>
 					</li>
-					<li class=" tsd-kind-function tsd-is-external">
+					<li class=" tsd-kind-function">
 						<a href="globals.html#wrappeduniontype" class="tsd-kind-icon">wrapped<wbr>Union<wbr>Type</a>
 					</li>
 				</ul>
