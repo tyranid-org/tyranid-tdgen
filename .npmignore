@@ -1,9 +1,6 @@
 generated
 example
 test
-dist/example
-dist/test
-src
 node_modules
 .nyc_output
 coverage
