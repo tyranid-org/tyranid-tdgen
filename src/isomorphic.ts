@@ -30,7 +30,7 @@ declare module 'tyranid-isomorphic' {
 
     export interface CollectionInstance<IdType = string, T extends Document<IdType> = Document<IdType>> {
       findAll(args: any): Promise<T[]>;
-      findOne(args: any): Promise<T>;
+      findOne(args: any): Promise<T | null>;
       idToUid(id: IdType): string;
     }
 

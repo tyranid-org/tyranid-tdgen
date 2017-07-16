@@ -28,7 +28,7 @@ declare module 'tyranid-client' {
 
     export interface CollectionInstance<T extends Document = Document> {
       findAll(args: any): Promise<T[]>;
-      findOne(args: any): Promise<T>;
+      findOne(args: any): Promise<T | null>;
       idToUid(id: string): string;
     }
 
