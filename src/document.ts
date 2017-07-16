@@ -19,6 +19,6 @@ export function docInterface(
      * Document returned by collection "${name}" <${colName}>
      */
     export interface ${interfaceName}<IdType = ${idType}>
-      extends ${superInterface}<IdType>, ${baseName}<IdType, ${superInterface}<IdType>> { _id: IdType }
+      extends ${superInterface}<IdType>, ${baseName}<IdType, ${superInterface}<IdType> & { _id: IdType }> { _id: IdType }
     `;
 }

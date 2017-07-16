@@ -142,7 +142,8 @@ export function generateCollectionLookups(
 
 export function generateCommonTypes(
   collections: Tyr.CollectionInstance[],
-  idType = 'string'
+  idType = 'string',
+  exportInterfaces = true
 ) {
   const sorted = _.sortBy(collections, 'def.name');
   const docs: string[] = [];
@@ -161,13 +162,13 @@ export function generateCommonTypes(
       : '';
     docs.push(
       pad(
-        `export interface ${docName} extends Tyr.Document, ${isoName}<${idType}, Tyr.Document> {}`,
+        `${exportInterfaces ? 'export ' : ''}interface ${docName} extends Inserted, Tyr.Document, ${isoName}<${idType}, Tyr.Document & Inserted> {}`,
         2
       )
     );
     cols.push(
       pad(
-        `export interface ${colName} extends Tyr.CollectionInstance<${docName}>${staticName} {}`,
+        `${exportInterfaces ? 'export ' : ''}interface ${colName} extends Tyr.CollectionInstance<${docName}>${staticName} {}`,
         2
       )
     );
@@ -176,6 +177,14 @@ export function generateCommonTypes(
   });
 
   return `
+
+    /**
+     * documents inserted into the db
+     */
+    interface Inserted {
+      _id: ${idType}
+    }
+
     ${docs.join('\n').trim()}
 
     ${cols.join('\n').trim()}
