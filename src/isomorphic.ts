@@ -35,7 +35,7 @@ declare module 'tyranid-isomorphic' {
     }
 
     export interface Document<IdType = string> {
-      $model: CollectionInstance<this>;
+      $model: CollectionInstance<IdType, this>;
       $uid: string;
       $id: IdType;
     }
