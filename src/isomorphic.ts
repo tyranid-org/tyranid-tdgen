@@ -162,13 +162,17 @@ export function generateCommonTypes(
       : '';
     docs.push(
       pad(
-        `${exportInterfaces ? 'export ' : ''}interface ${docName} extends Inserted, Tyr.Document, ${isoName}<${idType}, Tyr.Document & Inserted> {}`,
+        `${exportInterfaces
+          ? 'export '
+          : ''}interface ${docName} extends Inserted, Tyr.Document, ${isoName}<${idType}, Tyr.Document & Inserted> {}`,
         2
       )
     );
     cols.push(
       pad(
-        `${exportInterfaces ? 'export ' : ''}interface ${colName} extends Tyr.CollectionInstance<${docName}>${staticName} {}`,
+        `${exportInterfaces
+          ? 'export '
+          : ''}interface ${colName} extends Tyr.CollectionInstance<${docName}>${staticName} {}`,
         2
       )
     );
