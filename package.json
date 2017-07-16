@@ -19,7 +19,8 @@
     "docs": "typedoc --options typedoc.json src",
     "gh-pages": "npm run docs && gh-pages -d docs",
     "prettier": "prettier --single-quote --write ./{src,test}/**/*.ts ./{src,test,example}/*.ts",
-    "precommit": "npm run prettier && npm test"
+    "precommit": "npm run prettier && npm test",
+    "generate-examples": "ts-node ./example/generate.ts"
   },
   "engines": {
     "node": ">=6.9.1"
