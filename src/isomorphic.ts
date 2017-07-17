@@ -198,9 +198,9 @@ export function generateCommonTypes(
       _id: ${idType}
     }
 
-    ${docs.join('\n').trim()}
+  ${docs.join('\n').trim()}
 
-    ${cols.join('\n').trim()}
+  ${cols.join('\n').trim()}
 
     ${aliases.join('\n').trim()}
   `;
