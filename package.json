@@ -1,6 +1,6 @@
 {
   "name": "tyranid-tdgen",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Generate type definition files from tyranid schemas",
   "main": "./dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
@@ -28,12 +28,10 @@
   "author": "bsouthga@gmail.com",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/mongodb": "2.2.7",
     "ava": "0.16.0",
     "codecov": "1.0.1",
     "gh-pages": "1.0.0",
     "husky": "0.14.3",
-    "mongodb": "2.2.30",
     "nyc": "8.3.0",
     "prettier": "1.5.2",
     "ts-node": "^3.2.0",

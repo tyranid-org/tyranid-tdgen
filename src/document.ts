@@ -9,7 +9,7 @@ export function docInterface(
   opts: { superInterface?: string; idType?: string } = {}
 ): string {
   const { name, fields } = col.def;
-  const { superInterface = 'Document', idType = 'string' } = opts;
+  const { superInterface = 'Inserted', idType = 'string' } = opts;
   const interfaceName = names.document(name);
   const baseName = names.base(name);
   const colName = names.collection(name);
@@ -19,6 +19,7 @@ export function docInterface(
      * Document returned by collection "${name}" <${colName}>
      */
     export interface ${interfaceName}<IdType = ${idType}>
-      extends ${superInterface}<IdType>, ${baseName}<IdType, ${superInterface}<IdType> & { _id: IdType }> { _id: IdType }
+      extends ${superInterface}<IdType>,
+              ${baseName}<IdType, ${superInterface}<IdType>> {}
     `;
 }

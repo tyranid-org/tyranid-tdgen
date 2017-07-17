@@ -40,6 +40,10 @@ declare module 'tyranid-isomorphic' {
       $id: IdType;
     }
 
+    export interface Inserted<IdType = string> extends Document<IdType> {
+      _id: IdType;
+    }
+
 ${generateIsomorphicInterfaces(collections, {
     client: true,
     commentLineWidth: passedOptions.commentLineWidth
@@ -164,7 +168,7 @@ export function generateCommonTypes(
       pad(
         `${exportInterfaces
           ? 'export '
-          : ''}interface ${docName} extends Inserted, Tyr.Document, ${isoName}<${idType}, Tyr.Document & Inserted> {}`,
+          : ''}interface ${docName} extends Inserted, ${isoName}<${idType}, Inserted> {}`,
         2
       )
     );
@@ -183,9 +187,9 @@ export function generateCommonTypes(
   return `
 
     /**
-     * documents inserted into the db
+     * documents inserted into the db and given _id
      */
-    interface Inserted {
+    interface Inserted extends Tyr.Document {
       _id: ${idType}
     }
 

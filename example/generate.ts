@@ -1,18 +1,12 @@
 import { Tyr } from 'tyranid';
 import * as fs from 'fs';
-import * as mongodb from 'mongodb';
 import * as path from 'path';
 import { generateFile } from '../';
 
 generate().catch(console.error);
 
 async function generate() {
-  const db = await mongodb.MongoClient.connect(
-    'mongodb://127.0.0.1:27017/tyranid_tdgen'
-  );
-
   Tyr.config({
-    db: db,
     validate: [
       {
         dir: path.resolve(__dirname, `./models/`),
