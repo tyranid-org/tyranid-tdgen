@@ -170,7 +170,7 @@ export function generateCommonTypes(
     docs.push(`
       /**
        * ${names.format(output)} document definition for ${colName},
-       * extends isomorphic base interface ${isoName}.
+       * extends isomorphic base interface ${names.base(name)}.
        */
       ${output === 'client' ? 'export ' : ''}interface ${docName}
         extends Inserted,
