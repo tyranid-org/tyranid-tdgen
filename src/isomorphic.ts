@@ -168,21 +168,21 @@ export function generateCommonTypes(
       : '';
 
     docs.push(`
-      /**
-       * ${names.format(output)} document definition for ${colName},
-       * extends isomorphic base interface ${names.base(name)}.
-       */
-      ${output === 'client' ? 'export ' : ''}interface ${docName}
-        extends Inserted,
-                ${isoName}<${idType}, Inserted> {}
+    /**
+     * ${names.format(output)} document definition for ${colName},
+     * extends isomorphic base interface ${names.base(name)}.
+     */
+    ${output === 'client' ? 'export ' : ''}interface ${docName}
+      extends Inserted,
+              ${isoName}<${idType}, Inserted> {}
     `);
 
     cols.push(`
-      /**
-       * ${names.format(output)} collection definition.
-       */
-      ${output === 'client' ? 'export ' : ''}interface ${colName}
-        extends Tyr.CollectionInstance<${docName}>${staticName} {}
+    /**
+     * ${names.format(output)} collection definition.
+     */
+    ${output === 'client' ? 'export ' : ''}interface ${colName}
+      extends Tyr.CollectionInstance<${docName}>${staticName} {}
     `);
 
     if (c.def.enum)
@@ -198,9 +198,9 @@ export function generateCommonTypes(
       _id: ${idType}
     }
 
-  ${docs.join('\n').trim()}
+    ${docs.join('\n').trim()}
 
-  ${cols.join('\n').trim()}
+    ${cols.join('\n').trim()}
 
     ${aliases.join('\n').trim()}
   `;
