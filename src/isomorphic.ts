@@ -146,8 +146,8 @@ export function generateCollectionLookups(
 
 export function generateCommonTypes(
   collections: Tyr.CollectionInstance[],
-  idType = 'string',
-  exportInterfaces = true
+  output: 'server' | 'client',
+  idType = 'string'
 ) {
   const sorted = _.sortBy(collections, 'def.name');
   const docs: string[] = [];
@@ -161,25 +161,34 @@ export function generateCommonTypes(
     const isoName = names.isomorphic(names.base(name));
     const aliasName = names.id(name);
     const isoAlias = names.isomorphic(names.id(name));
+
     const staticName = c.def.enum
-      ? `, ${names.isomorphic(names.enumStatic(name))}`
+      ? `,
+                ${names.isomorphic(names.enumStatic(name))}`
       : '';
-    docs.push(
-      pad(
-        `${exportInterfaces
+
+    docs.push(`
+      /**
+       * ${names.format(output)} document definition for ${colName},
+       * extends isomorphic base interface ${isoName}.
+       */
+      ${output === 'client'
           ? 'export '
-          : ''}interface ${docName} extends Inserted, ${isoName}<${idType}, Inserted> {}`,
-        2
-      )
-    );
-    cols.push(
-      pad(
-        `${exportInterfaces
+          : ''}interface ${docName}
+        extends Inserted,
+                ${isoName}<${idType}, Inserted> {}
+    `);
+
+    cols.push(`
+      /**
+       * ${names.format(output)} collection definition.
+       */
+      ${output === 'client'
           ? 'export '
-          : ''}interface ${colName} extends Tyr.CollectionInstance<${docName}>${staticName} {}`,
-        2
-      )
-    );
+          : ''}interface ${colName}
+        extends Tyr.CollectionInstance<${docName}>${staticName} {}
+    `);
+
     if (c.def.enum)
       aliases.push(pad(`export type ${aliasName} = ${isoAlias};`, 2));
   });

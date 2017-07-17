@@ -24,7 +24,7 @@ declare module 'tyranid' {
   namespace Tyr {
     export type CollectionName = ${names.isomorphic('CollectionName')};
     export type CollectionId = ${names.isomorphic('CollectionId')};
-    ${generateCommonTypes(collections, 'ObjectID', false)}
+    ${generateCommonTypes(collections, 'server', 'ObjectID')}
     ${generateCollectionLookups(collections, false)}
   }
 

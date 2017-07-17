@@ -38,7 +38,7 @@ declare module 'tyranid-client' {
       $id: string;
     }
 
-    ${generateCommonTypes(collections)}
+    ${generateCommonTypes(collections, 'client', 'string')}
     ${generateCollectionLookups(collections, true)}
   }
 
