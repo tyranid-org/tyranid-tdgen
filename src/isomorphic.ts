@@ -172,9 +172,7 @@ export function generateCommonTypes(
        * ${names.format(output)} document definition for ${colName},
        * extends isomorphic base interface ${isoName}.
        */
-      ${output === 'client'
-          ? 'export '
-          : ''}interface ${docName}
+      ${output === 'client' ? 'export ' : ''}interface ${docName}
         extends Inserted,
                 ${isoName}<${idType}, Inserted> {}
     `);
@@ -183,9 +181,7 @@ export function generateCommonTypes(
       /**
        * ${names.format(output)} collection definition.
        */
-      ${output === 'client'
-          ? 'export '
-          : ''}interface ${colName}
+      ${output === 'client' ? 'export ' : ''}interface ${colName}
         extends Tyr.CollectionInstance<${docName}>${staticName} {}
     `);
 
