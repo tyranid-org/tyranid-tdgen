@@ -9,7 +9,7 @@ const config = require(path.join(ROOT, '../../package.json'));
 const CWD = process.cwd();
 const { Tyr } = require(path.join(
   CWD,
-  './node_modules/tyranid/dist/tyranid.js'
+  './node_modules/tyranid/dist/src/tyranid.js'
 ));
 let fileGlob: string | undefined;
 
