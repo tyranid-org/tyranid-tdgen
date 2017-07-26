@@ -38,7 +38,7 @@ program
   const globToUse =
     path.resolve(fileGlob) === fileGlob ? fileGlob : path.join(CWD, fileGlob);
 
-  Tyr.config({ validate: [{ glob: globToUse }] });
+  await Tyr.config({ validate: [{ glob: globToUse }] });
 
   const stream = generateStream(Tyr.collections, {
     type: program.type || 'isomorphic'

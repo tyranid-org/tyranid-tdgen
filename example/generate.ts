@@ -6,7 +6,7 @@ import { generateFile } from '../';
 generate().catch(console.error);
 
 async function generate() {
-  Tyr.config({
+  await Tyr.config({
     validate: [
       {
         dir: path.resolve(__dirname, `./models/`),

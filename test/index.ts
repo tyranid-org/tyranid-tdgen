@@ -9,7 +9,7 @@ import { wordWrap } from '../src/util';
 const root = __dirname.replace(`${path.sep}test`, '');
 
 test.before(async () => {
-  Tyr.config({
+  await Tyr.config({
     validate: [
       { dir: root + `${path.sep}test${path.sep}models`, fileMatch: '.*.js' }
     ]

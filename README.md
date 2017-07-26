@@ -70,7 +70,7 @@ async function generate() {
     'mongodb://127.0.0.1:27017/tyranid_tdgen'
   );
 
-  Tyr.config({
+  await Tyr.config({
     db: db,
     validate: [
       {
