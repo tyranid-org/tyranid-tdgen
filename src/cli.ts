@@ -34,7 +34,7 @@ program
  */
 (async () => {
   if (!fileGlob) return program.help();
-  const root = process.cwd()
+  const root = process.cwd();
   const outFile = program['outFile'];
 
   const globToUse =
@@ -50,10 +50,12 @@ program
   });
 
   if (outFile) {
-    const filename = path.join(root, outFile)
-    stream.pipe(fs.createWriteStream(filename).on('finish', () => {
-      process.exit(0);
-    }));
+    const filename = path.join(root, outFile);
+    stream.pipe(
+      fs.createWriteStream(filename).on('finish', () => {
+        process.exit(0);
+      })
+    );
   } else {
     stream.pipe(process.stdout);
     stream.on('end', () => {
