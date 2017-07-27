@@ -34,27 +34,32 @@ program
  */
 (async () => {
   if (!fileGlob) return program.help();
+  const root = process.cwd()
+  const outFile = program['outFile'];
 
   const globToUse =
     path.resolve(fileGlob) === fileGlob ? fileGlob : path.join(CWD, fileGlob);
 
+  const log = console.log;
+  if (!outFile) (console as any).log = () => {};
   await Tyr.config({ validate: [{ glob: globToUse }] });
+  if (!outFile) console.log = log;
 
   const stream = generateStream(Tyr.collections, {
     type: program.type || 'isomorphic'
   });
 
-  if (program['outFile']) {
-    stream.pipe(fs.createWriteStream(program['outFile'])).on('finish', () => {
-      process.exit();
-    });
+  if (outFile) {
+    const filename = path.join(root, outFile)
+    stream.pipe(fs.createWriteStream(filename).on('finish', () => {
+      process.exit(0);
+    }));
   } else {
     stream.pipe(process.stdout);
+    stream.on('end', () => {
+      process.exit(0);
+    });
   }
-
-  stream.on('end', () => {
-    process.exit();
-  });
 })().catch(err => {
   console.log(err.stack);
   process.exit(1);
