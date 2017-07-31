@@ -67,16 +67,12 @@ export function enumStaticInterface(col: Tyr.CollectionInstance) {
       let obj = '{';
       for (const key of Object.keys(row) as (keyof typeof row)[]) {
         if (typeof row[key] !== 'undefined') {
-          // for enum values, reproduce constant values literally
-          const literalString = typeof row[key] === 'string';
-          const literalNumber = typeof row[key] === 'number';
-
           let propType: string;
-          switch (true) {
-            case literalString:
+          switch (typeof row[key]) {
+            case 'string':
               propType = `'${row[key]}'`;
               break;
-            case literalNumber:
+            case 'number':
               propType = `${row[key]}`;
               break;
             default:
