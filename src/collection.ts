@@ -65,7 +65,7 @@ export function enumStaticInterface(col: Tyr.CollectionInstance) {
   if (rows.length && 'name' in fields) {
     for (const row of rows) {
       let obj = '{';
-      for (const key in row) {
+      for (const key of Object.keys(row) as (keyof typeof row)[]) {
         if (typeof row[key] !== 'undefined') {
           // for enum values, reproduce constant values literally
           const literalString = typeof row[key] === 'string';
