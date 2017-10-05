@@ -133,8 +133,13 @@ export function addField(opts: {
    * link types
    *
    */
-  if (typeof def.link === 'string') {
-    const linkCol = Tyr.byName[def.link];
+  let defLink = def.link;
+  if (typeof defLink === 'string') {
+    if (defLink.endsWith('?')) {
+      defLink = defLink.substring(0, defLink.length - 1);
+    }
+
+    const linkCol = Tyr.byName[defLink];
     if (!linkCol) throw new Error(`No collection for link: ${def.link}`);
 
     const linkIdType = linkCol.def.enum ? names.id(linkCol.def.name) : 'IdType';
@@ -157,7 +162,7 @@ export function addField(opts: {
      */
     out += pad(
       `${replacementName}?: Container & ${names.base(
-        def.link
+        defLink
       )}<IdType, Container>`,
       indent - 1
     );
