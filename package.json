@@ -9,9 +9,9 @@
   },
   "scripts": {
     "build": "rm -rf ./dist/ && npm run tsc",
-    "pretest": "npm run build",
+    "pretest": "rm -rf generated && npm run build",
     "prepublish": "npm run test",
-    "ava": "mkdir -p generated && nyc ava",
+    "ava": "mkdir generated && nyc ava",
     "test": "npm run ava && npm run compile-test",
     "compile-test": "tsc -p ./test/compile-test/ && tsc -p ./test/compile-client/",
     "tsc": "tsc -d --pretty",
@@ -37,10 +37,10 @@
     "ts-node": "^3.2.0",
     "typedoc": "0.7.1",
     "typescript": "2.4.1",
-    "tyranid": "^0.2.11"
+    "tyranid": "^0.3.0"
   },
   "peerDependencies": {
-    "tyranid": "^0.2.11"
+    "tyranid": "^0.3.0"
   },
   "ava": {
     "files": [
