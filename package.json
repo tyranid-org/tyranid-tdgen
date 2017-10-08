@@ -23,7 +23,7 @@
     "generate-examples": "ts-node ./example/generate.ts"
   },
   "engines": {
-    "node": ">=6.9.1"
+    "node": ">=8.1.4"
   },
   "author": "bsouthga@gmail.com",
   "license": "Apache-2.0",

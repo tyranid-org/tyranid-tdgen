@@ -135,8 +135,14 @@ export function addField(opts: {
    */
   if (typeof def.link === 'string') {
     // Same parsing as https://github.com/tyranid-org/tyranid/blob/master/src/core/collection.js#L1458
-    const linkCol = Tyr.byName[def.link.endsWith('?') ? def.link.substring(0, def.link.length - 1) : def.link];
-    if (!linkCol) throw new Error(`No collection for link: ${colName}.${def.link}`);
+    const linkCol =
+      Tyr.byName[
+        def.link.endsWith('?')
+          ? def.link.substring(0, def.link.length - 1)
+          : def.link
+      ];
+    if (!linkCol)
+      throw new Error(`No collection for link: ${colName}.${def.link}`);
 
     const linkIdType = linkCol.def.enum ? names.id(linkCol.def.name) : 'IdType';
 
