@@ -1,6 +1,6 @@
 {
   "name": "tyranid-tdgen",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Generate type definition files from tyranid schemas",
   "main": "./dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
@@ -37,10 +37,10 @@
     "ts-node": "^3.2.0",
     "typedoc": "0.7.1",
     "typescript": "2.4.1",
-    "tyranid": "^0.3.0"
+    "tyranid": "^0.4.0"
   },
   "peerDependencies": {
-    "tyranid": "^0.3.0"
+    "tyranid": "^0.4.0"
   },
   "ava": {
     "files": [
