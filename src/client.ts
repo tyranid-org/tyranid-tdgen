@@ -31,6 +31,8 @@ declare module 'tyranid-client' {
       findOne(args: any): Promise<T | null>;
       idToUid(id: string): string;
       on(opts: any): () => void;
+      subscribe(query: any, cancel?: boolean): void;
+      values: T[];
     }
 
     export interface Document {
