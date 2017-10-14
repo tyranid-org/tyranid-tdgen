@@ -30,6 +30,7 @@ declare module 'tyranid-client' {
       findAll(args: any): Promise<T[]>;
       findOne(args: any): Promise<T | null>;
       idToUid(id: string): string;
+      on(opts: any): () => void;
     }
 
     export interface Document {
