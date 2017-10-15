@@ -23,6 +23,7 @@ declare module 'tyranid-client' {
 
     export const byName: CollectionsByName & { [key: string]: CollectionInstance | void };
     export const byId: CollectionsById & { [key: string]: CollectionInstance | void };
+    export const init: () => void;
     export type CollectionName = ${names.isomorphic('CollectionName')};
     export type CollectionId = ${names.isomorphic('CollectionId')};
 
