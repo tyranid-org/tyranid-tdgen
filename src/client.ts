@@ -18,12 +18,14 @@ export function generateClientDefinitionFile(
 
 declare module 'tyranid-client' {
   import { Tyr as ${names.isomorphic()} } from 'tyranid-isomorphic';
+  import * as io from 'tyranid-isomorphic';
 
   export namespace Tyr {
 
     export const byName: CollectionsByName & { [key: string]: CollectionInstance | void };
     export const byId: CollectionsById & { [key: string]: CollectionInstance | void };
     export const init: () => void;
+    export const setSocketLibrary: (library: typeof io) => void;
     export type CollectionName = ${names.isomorphic('CollectionName')};
     export type CollectionId = ${names.isomorphic('CollectionId')};
 
@@ -32,7 +34,7 @@ declare module 'tyranid-client' {
       findOne(args: any): Promise<T | null>;
       idToUid(id: string): string;
       on(opts: any): () => void;
-      subscribe(query: any, cancel?: boolean): void;
+      subscribe(query: any, cancel?: boolean): Promise<void>;
       values: T[];
     }
 
