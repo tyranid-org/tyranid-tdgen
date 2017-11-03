@@ -18,7 +18,7 @@ export function generateClientDefinitionFile(
 
 declare module 'tyranid-client' {
   import { Tyr as ${names.isomorphic()} } from 'tyranid-isomorphic';
-  import * as io from 'tyranid-isomorphic';
+  import * as io from 'socket.io-client';
 
   export namespace Tyr {
 
