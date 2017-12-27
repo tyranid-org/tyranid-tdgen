@@ -36,6 +36,7 @@ declare module 'tyranid-client' {
       on(opts: any): () => void;
       subscribe(query: any, cancel?: boolean): Promise<void>;
       values: T[];
+      labels(search: string | string[]): Promise<T[]>;
     }
 
     export interface Document {
